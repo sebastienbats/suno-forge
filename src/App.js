@@ -278,14 +278,32 @@ const MOODS = ["Épique","Sombre","Mystique","Rituel","Triomphant","Mélancoliqu
 const PRODS = ["High production","Lo-fi / Raw","Organique","Cinématique","Dense / Saturé","Épuré / Minimaliste","Analog Warmth","Cold Digital"];
 const TEMPOS = ["Funeral pace","Lent / Downtempo","Mid-tempo","Driving rhythm","Rapide / Energetic","Blast beat speed"];
 
-// Nouveaux paramètres musicaux
+// Paramètres musicaux
 const KEYS = [
   "C major", "G major", "D major", "A major", "E major", "B major",
   "F# major", "C# major", "F major", "Bb major", "Eb major", "Ab major",
   "A minor", "E minor", "B minor", "F# minor", "C# minor", "G# minor",
   "D minor", "G minor", "C minor", "F minor", "Bb minor", "Eb minor"
 ];
+
 const TIME_SIGS = ["4/4", "3/4", "2/4", "6/8", "9/8", "12/8", "5/4", "7/8", "5/8", "7/4", "3/2", "2/2"];
+
+// Recommandations par catégorie
+const RECOMMENDED_KEYS = {
+  metal: ["E minor", "D minor", "C minor", "A minor", "B minor", "F# minor"],
+  cinematic: ["D minor", "A minor", "G minor", "E minor", "C major", "F major"],
+  folk: ["D major", "G major", "A major", "E minor", "A minor", "C major"],
+  electronic: ["C minor", "D minor", "F minor", "G minor", "A minor", "E minor"],
+  urban: ["C minor", "D minor", "E minor", "G minor", "A minor", "Bb major", "Db major"]
+};
+
+const RECOMMENDED_TIME_SIGS = {
+  metal: ["4/4", "3/4", "6/8", "12/8", "7/8"],
+  cinematic: ["4/4", "3/4", "6/8", "5/4", "2/2"],
+  folk: ["4/4", "3/4", "6/8", "9/8", "2/4"],
+  electronic: ["4/4", "3/4", "6/8", "2/4"],
+  urban: ["4/4", "3/4", "6/8", "2/4", "5/4"]
+};
 
 /* ══════════════════════════════════════════════════════════
    HELPERS
@@ -302,7 +320,6 @@ const getInstrLabel = (catKey, instrTag) => {
   return instrTag;
 };
 
-// Limite augmentée à 200 caractères
 const truncateStyle = (str, maxLen = 200) => {
   if (str.length <= maxLen) return str;
   let truncated = str.slice(0, maxLen);
@@ -311,7 +328,6 @@ const truncateStyle = (str, maxLen = 200) => {
   return truncated.trim();
 };
 
-// buildStyleLocal avec nouvelle limite
 const buildStyleLocal = (sub, moods, instrs, techs, prod, tempo, vocals, key, bpm, timeSig) => {
   let parts = [sub];
   if (moods.length) parts.push(moods.slice(0, 2).join(", "));
@@ -365,8 +381,24 @@ const buildVariantsLocal = (cat, sub, moods, prod) => {
   return variants;
 };
 
+const getSortedKeys = (category) => {
+  const recommended = RECOMMENDED_KEYS[category] || [];
+  const allKeys = KEYS;
+  const recommendedSet = new Set(recommended);
+  const otherKeys = allKeys.filter(k => !recommendedSet.has(k));
+  return { recommended, otherKeys };
+};
+
+const getSortedTimeSigs = (category) => {
+  const recommended = RECOMMENDED_TIME_SIGS[category] || [];
+  const allTimeSigs = TIME_SIGS;
+  const recommendedSet = new Set(recommended);
+  const otherTimeSigs = allTimeSigs.filter(ts => !recommendedSet.has(ts));
+  return { recommended, otherTimeSigs };
+};
+
 /* ══════════════════════════════════════════════════════════
-   COMPOSANTS UI (contraste amélioré)
+   COMPOSANTS UI
 ══════════════════════════════════════════════════════════ */
 
 const Pill = ({ label, active, accent = "#D4831A", onClick, disabled }) => (
@@ -463,7 +495,7 @@ export default function SunoForge() {
 
   const accent = CATS[cat].accent;
 
-  // Injection des polices et styles globaux (avec améliorations contrastées)
+  // Injection des polices et styles globaux
   useEffect(() => {
     const link = document.createElement("link");
     link.rel = "stylesheet";
@@ -763,15 +795,27 @@ export default function SunoForge() {
           <SLabel badge={key || bpm || timeSig ? "actif" : "optionnel"}>🎼 Théorie musicale</SLabel>
           <div style={{ marginBottom: 12 }}>
             <div style={{ fontFamily: "'Cinzel',serif", fontSize: 9, color: "#A89880", marginBottom: 4, letterSpacing: ".1em" }}>Tonalité</div>
-            <select value={key} onChange={e => setKey(e.target.value)}
-              style={{
-                background: "#141210", border: "1px solid #3A3028", borderRadius: 6,
-                color: "#F5EDE0", fontFamily: "'Crimson Pro',serif", fontSize: 13,
-                padding: "6px 8px", width: "100%", cursor: "pointer"
-              }}>
-              <option value="">-- Aucune --</option>
-              {KEYS.map(k => <option key={k} value={k}>{k}</option>)}
-            </select>
+            {(() => {
+              const { recommended, otherKeys } = getSortedKeys(cat);
+              return (
+                <select value={key} onChange={e => setKey(e.target.value)}
+                  style={{
+                    background: "#141210", border: "1px solid #3A3028", borderRadius: 6,
+                    color: "#F5EDE0", fontFamily: "'Crimson Pro',serif", fontSize: 13,
+                    padding: "6px 8px", width: "100%", cursor: "pointer"
+                  }}>
+                  <option value="">-- Aucune --</option>
+                  {recommended.length > 0 && (
+                    <optgroup label="✨ Recommandées pour ce style">
+                      {recommended.map(k => <option key={k} value={k}>{k}</option>)}
+                    </optgroup>
+                  )}
+                  <optgroup label="📚 Autres tonalités">
+                    {otherKeys.map(k => <option key={k} value={k}>{k}</option>)}
+                  </optgroup>
+                </select>
+              );
+            })()}
           </div>
           <div style={{ marginBottom: 12 }}>
             <div style={{ fontFamily: "'Cinzel',serif", fontSize: 9, color: "#A89880", marginBottom: 4, letterSpacing: ".1em" }}>Tempo (BPM)</div>
@@ -785,15 +829,27 @@ export default function SunoForge() {
           </div>
           <div>
             <div style={{ fontFamily: "'Cinzel',serif", fontSize: 9, color: "#A89880", marginBottom: 4, letterSpacing: ".1em" }}>Signature rythmique</div>
-            <select value={timeSig} onChange={e => setTimeSig(e.target.value)}
-              style={{
-                background: "#141210", border: "1px solid #3A3028", borderRadius: 6,
-                color: "#F5EDE0", fontFamily: "'Crimson Pro',serif", fontSize: 13,
-                padding: "6px 8px", width: "100%", cursor: "pointer"
-              }}>
-              <option value="">-- Aucune --</option>
-              {TIME_SIGS.map(ts => <option key={ts} value={ts}>{ts}</option>)}
-            </select>
+            {(() => {
+              const { recommended, otherTimeSigs } = getSortedTimeSigs(cat);
+              return (
+                <select value={timeSig} onChange={e => setTimeSig(e.target.value)}
+                  style={{
+                    background: "#141210", border: "1px solid #3A3028", borderRadius: 6,
+                    color: "#F5EDE0", fontFamily: "'Crimson Pro',serif", fontSize: 13,
+                    padding: "6px 8px", width: "100%", cursor: "pointer"
+                  }}>
+                  <option value="">-- Aucune --</option>
+                  {recommended.length > 0 && (
+                    <optgroup label="✨ Recommandées pour ce style">
+                      {recommended.map(ts => <option key={ts} value={ts}>{ts}</option>)}
+                    </optgroup>
+                  )}
+                  <optgroup label="📚 Autres signatures">
+                    {otherTimeSigs.map(ts => <option key={ts} value={ts}>{ts}</option>)}
+                  </optgroup>
+                </select>
+              );
+            })()}
           </div>
         </Sec>
       </>)}
