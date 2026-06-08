@@ -99,13 +99,9 @@ Vous pouvez facilement enrichir les données dans src/App.js :
 - Nouvelles techniques : complétez l’objet TECH avec le tag exact de l’instrument
 - Ajouter des tonalités : modifiez le tableau KEYS
 - Ajouter des signatures : modifiez le tableau TIME_SIGS
-
-Modifier les couleurs : ajustez les accents dans CATS (propriété accent)
+- Modifier les couleurs : ajustez les accents dans CATS (propriété accent)
 
 ## 📄 Licence
 MIT – vous êtes libre d’utiliser, modifier et distribuer ce projet.
-
-## 🙌 Contributions : les suggestions et pull requests sont les bienvenues !
-## 🐛 Problème : ouvrez une issue sur GitHub.
 
 Forgé avec ⚔️ pour les musiciens et créateurs de contenu Suno.
