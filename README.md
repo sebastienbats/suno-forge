@@ -1,23 +1,24 @@
 # 🎵 SUNO FORGE – Générateur de prompts pour Suno 4.5
 
-> Créez des prompts musicaux optimisés pour le modèle Suno 4.5 avec une interface réactive.
+> Créez des prompts musicaux optimisés pour le modèle Suno 4.5, avec une interface réactive.
 
 ![React](https://img.shields.io/badge/React-18.2-61DAFB?logo=react)
 ![License](https://img.shields.io/badge/License-MIT-green)
+![Version](https://img.shields.io/badge/version-2.0.0-blue)
 
 ## ✨ Fonctionnalités complètes
 
 ### 🏷️ Catégories principales (5)
-- **Metal** – Viking Folk Metal, Black Metal Atmosphérique, Melodic Death Metal, Doom, Power Metal, Symphonic, Industrial, Post-Metal
-- **Cinématique** – Epic Orchestral, Viking Cinématique, Dark Thriller Score, Fantasy RPG, Néoclassique, Grégorien, Score Nordique
-- **Folk & World** – Celtic Irlandais, Nordic Folk, Folk Acoustique, Médiéval, Pagan Rituel, World Tribal, Bard
-- **Electronic** – Synthwave, Darksynth, Dark Ambient, Pagan Electronic, Lo-fi Chillhop, Tribal Electronic, EBM/Aggrotech
+- **Metal** – Viking Folk Metal, Black Metal Atmosphérique, Melodic Death Metal, Doom / Funeral Doom, Power Metal, Symphonic Metal, Folk Metal Celtique, Industrial Metal, Post-Metal / Sludge
+- **Cinématique** – Epic Orchestral, Viking Cinématique, Dark Thriller Score, Fantasy RPG Score, Néoclassique, Grégorien / Rituel, Score Nordique
+- **Folk & World** – Celtic Irlandais, Nordic Folk Scandinave, Folk Acoustique, Médiéval Historique, Pagan Rituel, World Music Tribal, Bard / Troubadour
+- **Electronic** – Synthwave / Outrun, Darksynth, Dark Ambient / Drone, Pagan Electronic, Lo-fi Chillhop, Tribal Electronic, EBM / Aggrotech
 - **Urban** – Jazz Noir, Hip-Hop Boom Bap, Trap, R&B Neo-Soul, Funk Groove, Blues Électrique, Dark Pop Cinématique
 
 ### 🎭 Moods (14 ambiances, max 5)
 Épique · Sombre · Mystique · Rituel · Triomphant · Mélancolique · Agressif · Atmosphérique · Primal · Paisible · Furieux · Spirituel · Hypnotique · Dramatique
 
-### 🎤 Voix (7 groupes, max 5 tags)
+### 🎤 Voix (7 groupes, max 10 tags)
 - **Registre** : masculine, féminine, mixte, ténor, baryton, basse, soprano, contralto, contre-ténor
 - **Style** : clean, harsh, death growls, black metal screams, guttural, falsetto, chuchoté, aéré, râpeuse, spoken word, opératique, lyrique, folk, bluesy, soul, rap, mélodique, trap ad libs, nasal folk, yodel
 - **Chœur & Groupe** : mixte, masculin, féminin, épique, harmonies, backing vocals, call and response, antiphonie, unisson, barbershop
@@ -40,10 +41,10 @@ Plus de 200 techniques associées aux instruments (palm muting, blast beats, fin
 - **Production** : High production, Lo-fi/Raw, Organique, Cinématique, Dense/Saturé, Épuré/Minimaliste, Analog Warmth, Cold Digital
 - **Tempo** : Funeral pace, Lent/Downtempo, Mid-tempo, Driving rhythm, Rapide/Energetic, Blast beat speed
 
-### 🎼 Théorie musicale (NOUVEAU)
-- **Tonalité** : 24 tonalités (majeures et mineures) – C, G, D, A, E, B, F#, C#, F, Bb, Eb, Ab et leurs relatives mineures
+### 🎼 Théorie musicale
+- **Tonalité** : 24 tonalités (majeures et mineures) avec **recommandations par catégorie** (Metal, Cinématique, Folk, Electronic, Urban). Les tonalités les plus adaptées apparaissent en tête de liste.
 - **Tempo (BPM)** : réglage de 30 à 300 BPM (pas de 5)
-- **Signature rythmique** : 12 signatures (4/4, 3/4, 2/4, 6/8, 9/8, 12/8, 5/4, 7/8, 5/8, 7/4, 3/2, 2/2)
+- **Signature rythmique** : 12 signatures avec **recommandations par catégorie**. Les signatures les plus courantes pour le style choisi sont mises en avant.
 
 ### 🔧 Autres fonctionnalités
 - **Mode libre** : saisie textuelle complète (description personnalisée)
@@ -53,7 +54,7 @@ Plus de 200 techniques associées aux instruments (palm muting, blast beats, fin
 - **Conseils dynamiques** : astuces personnalisées selon vos sélections
 - **Variantes de prompt** : trois versions alternatives (Épique, Intime, Aggressive) prêtes à copier
 - **Interface responsive** : deux colonnes sur desktop, bascule en colonne unique sur mobile
-- **Design sombre et contrasté** : polices *Cinzel* (titres) et *Crimson Pro* (corps), palette inspirée des runes nordiques, contraste optimisé pour une lisibilité maximale
+- **Design sombre et contrasté** : polices *Cinzel* (titres) et *Crimson Pro* (corps), palette inspirée des runes nordiques, contraste optimisé
 - **Copie rapide** : chaque bloc (style, métatags, variantes) dispose d’un bouton Copier
 
 ## 📦 Dépendances
@@ -66,18 +67,21 @@ Plus de 200 techniques associées aux instruments (palm muting, blast beats, fin
 | react-scripts | 5.0.1 | Outils de build et développement |
 
 ## 🚀 Installation
-
 ```bash
+# Cloner le dépôt
 git clone https://github.com/sebastienbats/suno-forge.git
 cd suno-forge
+# Installer les dépendances
 npm install
+# Lancer l'application en mode développement
 npm start
 ```
 L’application sera accessible sur http://localhost:3000.
 
 Build pour la production
-bash
+```bash
 npm run build
+```
 Les fichiers optimisés seront générés dans le dossier /build.
 
 ## 🧙 Utilisation
@@ -89,7 +93,7 @@ Mode guidé :
 - Ajoutez jusqu’à 5 moods et jusqu’à 10 tags vocaux.
 - Sélectionnez des instruments (affichage hiérarchique par groupes).
 - Affinez avec des techniques de jeu (apparaissent dynamiquement selon les instruments choisis).
-- Définissez la production, le tempo (prédéfini ou BPM personnalisé), la tonalité et la signature rythmique.
+- Définissez la production, le tempo (prédéfini ou BPM personnalisé), la tonalité (avec recommandations) et la signature rythmique (avec recommandations).
 - Cliquez sur “FORGER LE PROMPT”.
 
 Récupérez le résultat :
@@ -102,9 +106,25 @@ Copiez n’importe quel bloc via les boutons dédiés.
 
 ## 📊 Aperçu du prompt généré
 Le générateur produit un prompt structuré comme suit :
+
 ```text
-Viking Folk Metal, Épique, Sombre, hurdy-gurdy, tagelharpa, palm muting, blast beats, High production, C minor, 140 BPM, 6/8, male vocals
+Viking Folk Metal, Épique, Sombre, hurdy-gurdy, tagelharpa, palm muting, blast beats, High production, C minor, 140 BPM, 6/8, male vocals, female choir
 ```
+## 🛠 Personnalisation
+Vous pouvez facilement enrichir les données dans src/App.js :
+
+|Élément à modifier	| Emplacement	| Description|
+|-------------------|-------------|------------|
+|Sous-styles|SUBSTYLES|Ajouter/modifier des styles par catégorie|
+|Instruments|INSTR|Ajouter des instruments (respectez la structure groupe → items)|
+|Techniques |TECH|Associer des techniques à un instrument (clé = tag exact)|
+|Tonalités	|KEYS|Ajouter des tonalités supplémentaires|
+|Tonalités recommandées|RECOMMENDED_KEYS|Définir les tonalités pertinentes par catégorie|
+|Signatures	TIME_SIGS	Ajouter des signatures rythmiques|
+|Signatures recommandées|RECOMMENDED_TIME_SIGS|Définir les signatures pertinentes par catégorie|
+|Couleurs|CATS|Modifier les couleurs d’accentuation|
+|Limites|tog()|Ajuster les limites (voix, moods, etc.)|
+
 ## 📁 Structure du projet
 ```text
 suno-forge/
@@ -124,17 +144,22 @@ suno-forge/
 - Google Fonts – Cinzel (titres), Crimson Pro (corps)
 - Create React App – Outillage et build
 
-## 🛠 Personnalisation
-Vous pouvez facilement enrichir les données dans src/App.js :
-- Ajouter des sous-styles : modifiez l’objet SUBSTYLES
-- Étendre les instruments : ajoutez des entrées dans INSTR (respectez la structure groupe → items)
-- Nouvelles techniques : complétez l’objet TECH avec le tag exact de l’instrument
-- Ajouter des tonalités : modifiez le tableau KEYS
-- Ajouter des signatures : modifiez le tableau TIME_SIGS
-- Modifier les couleurs : ajustez les accents dans CATS (propriété accent)
-- Ajuster les limites (voix, moods, etc.) : Limites	tog() 
-
+## 🌐 Compatibilité
+Navigateur	Version minimum
+Chrome	90+
+Firefox	88+
+Safari	14+
+Edge	90+
+Mobile (iOS/Android)	Navigateurs récents
 ## 📄 Licence
 MIT – vous êtes libre d’utiliser, modifier et distribuer ce projet.
+
+## 🤝 Contribution
+Les suggestions et pull requests sont les bienvenues !
+- Forkez le projet
+- Créez votre branche (git checkout -b feature/AmazingFeature)
+- Committez vos changements (git commit -m 'Add some AmazingFeature')
+- Poussez vers la branche (git push origin feature/AmazingFeature)
+- Ouvrez une Pull Request
 
 Forgé avec ⚔️ pour les musiciens et créateurs de contenu Suno.
