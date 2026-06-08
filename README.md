@@ -48,13 +48,22 @@ Plus de 200 techniques associées aux instruments (palm muting, blast beats, fin
 ### 🔧 Autres fonctionnalités
 - **Mode libre** : saisie textuelle complète (description personnalisée)
 - **Génération locale** : aucun appel API externe – prompts générés instantanément
-- **Contrainte Suno respectée** : champ `style` limité à 120 caractères avec compteur et barre de progression colorée
+- **Contrainte Suno respectée** : champ `style` limité à **200 caractères** avec compteur et barre de progression colorée (vert <170, orange 170-190, rouge >190)
 - **Métatags pour paroles** : structure suggérée (`[Intro]`, `[Verse]`, `Pre-Chorus`, `[Chorus]`, `[Bridge]`, `[Outro]`, `[Solo]`, `[Breakdown]`, etc.) adaptée à chaque catégorie
 - **Conseils dynamiques** : astuces personnalisées selon vos sélections
 - **Variantes de prompt** : trois versions alternatives (Épique, Intime, Aggressive) prêtes à copier
 - **Interface responsive** : deux colonnes sur desktop, bascule en colonne unique sur mobile
-- **Design sombre et contrasté** : polices *Cinzel* (titres) et *Crimson Pro* (corps), palette inspirée des runes nordiques
+- **Design sombre et contrasté** : polices *Cinzel* (titres) et *Crimson Pro* (corps), palette inspirée des runes nordiques, contraste optimisé pour une lisibilité maximale
 - **Copie rapide** : chaque bloc (style, métatags, variantes) dispose d’un bouton Copier
+
+## 📦 Dépendances
+
+| Package | Version | Utilisation |
+|---------|---------|-------------|
+| react | ^18.2.0 | Framework UI |
+| react-dom | ^18.2.0 | Rendu DOM |
+| lucide-react | ^0.263.1 | Icônes (Copy, Check, Wand2, etc.) |
+| react-scripts | 5.0.1 | Outils de build et développement |
 
 ## 🚀 Installation
 
@@ -91,6 +100,17 @@ Le générateur produit un prompt structuré comme suit :
 ```text
 Viking Folk Metal, Épique, Sombre, hurdy-gurdy, tagelharpa, palm muting, blast beats, High production, C minor, 140 BPM, 6/8, male vocals
 ```
+## 📁 Structure du projet
+text
+suno-forge/
+├── public/
+│   └── index.html
+├── src/
+│   ├── index.js
+│   └── App.js          # Composant principal (tout-en-un)
+├── package.json
+├── .gitignore
+└── README.md
 
 ## 🛠 Personnalisation
 Vous pouvez facilement enrichir les données dans src/App.js :
@@ -100,6 +120,7 @@ Vous pouvez facilement enrichir les données dans src/App.js :
 - Ajouter des tonalités : modifiez le tableau KEYS
 - Ajouter des signatures : modifiez le tableau TIME_SIGS
 - Modifier les couleurs : ajustez les accents dans CATS (propriété accent)
+- Ajuster les limites (voix, moods, etc.) : Limites	tog() 
 
 ## 📄 Licence
 MIT – vous êtes libre d’utiliser, modifier et distribuer ce projet.
