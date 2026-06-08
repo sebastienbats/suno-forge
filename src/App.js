@@ -278,7 +278,7 @@ const MOODS = ["Épique","Sombre","Mystique","Rituel","Triomphant","Mélancoliqu
 const PRODS = ["High production","Lo-fi / Raw","Organique","Cinématique","Dense / Saturé","Épuré / Minimaliste","Analog Warmth","Cold Digital"];
 const TEMPOS = ["Funeral pace","Lent / Downtempo","Mid-tempo","Driving rhythm","Rapide / Energetic","Blast beat speed"];
 
-// === NOUVEAUX PARAMÈTRES MUSICAUX ===
+// Nouveaux paramètres musicaux
 const KEYS = [
   "C major", "G major", "D major", "A major", "E major", "B major",
   "F# major", "C# major", "F major", "Bb major", "Eb major", "Ab major",
@@ -302,7 +302,8 @@ const getInstrLabel = (catKey, instrTag) => {
   return instrTag;
 };
 
-const truncateStyle = (str, maxLen = 120) => {
+// Limite augmentée à 200 caractères
+const truncateStyle = (str, maxLen = 200) => {
   if (str.length <= maxLen) return str;
   let truncated = str.slice(0, maxLen);
   const lastComma = truncated.lastIndexOf(',');
@@ -310,7 +311,7 @@ const truncateStyle = (str, maxLen = 120) => {
   return truncated.trim();
 };
 
-// === buildStyleLocal mis à jour avec key, bpm, timeSig ===
+// buildStyleLocal avec nouvelle limite
 const buildStyleLocal = (sub, moods, instrs, techs, prod, tempo, vocals, key, bpm, timeSig) => {
   let parts = [sub];
   if (moods.length) parts.push(moods.slice(0, 2).join(", "));
@@ -324,7 +325,7 @@ const buildStyleLocal = (sub, moods, instrs, techs, prod, tempo, vocals, key, bp
   if (vocals.length) parts.push(vocals.slice(0, 2).join(", "));
   let style = parts.join(", ");
   style = style.replace(/\s+/g, ' ').trim();
-  return truncateStyle(style, 120);
+  return truncateStyle(style, 200);
 };
 
 const buildMetatagsLocal = (cat, sub) => {
@@ -365,15 +366,15 @@ const buildVariantsLocal = (cat, sub, moods, prod) => {
 };
 
 /* ══════════════════════════════════════════════════════════
-   COMPOSANTS UI
+   COMPOSANTS UI (contraste amélioré)
 ══════════════════════════════════════════════════════════ */
 
 const Pill = ({ label, active, accent = "#D4831A", onClick, disabled }) => (
   <button onClick={onClick} disabled={disabled}
     style={{
-      background: active ? "#1E1A14" : "#0C0B09",
-      border: `1px solid ${active ? accent : "#1E1A14"}`,
-      color: active ? accent : "#A09880",
+      background: active ? "#2A241C" : "#0C0B09",
+      border: `1px solid ${active ? accent : "#3A3028"}`,
+      color: active ? accent : "#D0C0A8",
       borderRadius: 20, padding: "4px 10px", fontSize: 11.5,
       fontFamily: "'Crimson Pro',serif", cursor: disabled ? "not-allowed" : "pointer",
       transition: "all .15s", opacity: disabled && !active ? .3 : 1,
@@ -387,8 +388,8 @@ const Pill = ({ label, active, accent = "#D4831A", onClick, disabled }) => (
 const CopyBtn = ({ text, id, copied, onCopy }) => (
   <button onClick={() => onCopy(text, id)}
     style={{
-      background: "#161310", border: "1px solid #222018", borderRadius: 6,
-      color: copied === id ? "#4A9E6E" : "#C0B098",
+      background: "#161310", border: "1px solid #3A3028", borderRadius: 6,
+      color: copied === id ? "#5AB87A" : "#E8D8B0",
       padding: "3px 9px", fontSize: 11.5, cursor: "pointer",
       display: "flex", alignItems: "center", gap: 4,
       fontFamily: "'Crimson Pro',serif", flexShrink: 0,
@@ -399,22 +400,22 @@ const CopyBtn = ({ text, id, copied, onCopy }) => (
 
 const SLabel = ({ children, badge }) => (
   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-    <span style={{ fontFamily: "'Cinzel',serif", fontSize: 10, color: "#C0B098", letterSpacing: ".16em", textTransform: "uppercase" }}>
+    <span style={{ fontFamily: "'Cinzel',serif", fontSize: 10, color: "#D0C0A8", letterSpacing: ".16em", textTransform: "uppercase" }}>
       {children}
     </span>
     {badge != null && (
-      <span style={{ fontFamily: "'Cinzel',serif", fontSize: 10, color: "#3A3020" }}>{badge}</span>
+      <span style={{ fontFamily: "'Cinzel',serif", fontSize: 10, color: "#5A4A38" }}>{badge}</span>
     )}
   </div>
 );
 
 const AccGroup = ({ label, open, onToggle, children, count }) => (
-  <div style={{ borderBottom: "1px solid #1A1814" }}>
+  <div style={{ borderBottom: "1px solid #2A241C" }}>
     <button onClick={onToggle}
       style={{
         width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center",
         padding: "6px 0", background: "transparent", border: "none", cursor: "pointer",
-        color: open ? "#C0B098" : "#7A6A58", fontFamily: "'Cinzel',serif",
+        color: open ? "#E0D4B0" : "#A89880", fontFamily: "'Cinzel',serif",
         fontSize: 9.5, letterSpacing: ".13em", textTransform: "uppercase",
         transition: "color .15s",
       }}>
@@ -429,7 +430,7 @@ const Sec = ({ children, noBorder }) => (
   <div style={{
     display: "flex", flexDirection: "column", gap: 8,
     padding: "12px 16px",
-    borderBottom: noBorder ? "none" : "1px solid #1A1814",
+    borderBottom: noBorder ? "none" : "1px solid #2A241C",
   }}>
     {children}
   </div>
@@ -448,7 +449,6 @@ export default function SunoForge() {
   const [techs, setTechs] = useState([]);
   const [prod, setProd] = useState("");
   const [tempo, setTempo] = useState("");
-  // Nouveaux états
   const [key, setKey] = useState("");
   const [bpm, setBpm] = useState("");
   const [timeSig, setTimeSig] = useState("");
@@ -463,7 +463,7 @@ export default function SunoForge() {
 
   const accent = CATS[cat].accent;
 
-  // Fonts & global styles
+  // Injection des polices et styles globaux (avec améliorations contrastées)
   useEffect(() => {
     const link = document.createElement("link");
     link.rel = "stylesheet";
@@ -478,8 +478,8 @@ export default function SunoForge() {
       #root { height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
       ::-webkit-scrollbar { width: 4px; height: 4px; }
       ::-webkit-scrollbar-track { background: #090807; }
-      ::-webkit-scrollbar-thumb { background: #252018; border-radius: 2px; }
-      ::-webkit-scrollbar-thumb:hover { background: #4A3A28; }
+      ::-webkit-scrollbar-thumb { background: #3A3028; border-radius: 2px; }
+      ::-webkit-scrollbar-thumb:hover { background: #5A4A38; }
       .sf-main {
         flex: 1;
         overflow: hidden;
@@ -491,7 +491,7 @@ export default function SunoForge() {
         overflow-y: auto;
         overflow-x: hidden;
       }
-      .sf-panel-r { border-left: 1px solid #1A1814; }
+      .sf-panel-r { border-left: 1px solid #2A241C; }
       @media (max-width: 767px) {
         body { overflow: auto; }
         #root { height: auto; min-height: 100dvh; overflow: visible; }
@@ -501,7 +501,7 @@ export default function SunoForge() {
           height: auto;
         }
         .sf-panel { height: auto; overflow-y: visible; }
-        .sf-panel-r { border-left: none; border-top: 1px solid #1A1814; }
+        .sf-panel-r { border-left: none; border-top: 1px solid #2A241C; }
       }
       .pill-wrap { display: flex; flex-wrap: wrap; gap: 5px; }
       .cat-bar { display: flex; gap: 5px; overflow-x: auto; padding-bottom: 2px; }
@@ -512,11 +512,24 @@ export default function SunoForge() {
       .btn-gen { transition: all .2s; }
       .btn-gen:hover:not(:disabled) { background: #E8921F !important; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(212,131,26,.3); }
       .btn-gen:active:not(:disabled) { transform: translateY(0); }
-      .acc-grp-btn:hover { color: #C0B098 !important; }
+      .acc-grp-btn:hover { color: #E0D4B0 !important; }
       textarea:focus { outline: none; border-color: #D4831A !important; box-shadow: 0 0 0 2px rgba(212,131,26,.1); }
       @keyframes spin { to { transform: rotate(360deg); } }
       .hover-style:hover { background: #1A1612 !important; }
       .tech-grp-label { display: flex; align-items: center; gap: 5px; margin-bottom: 5px; margin-top: 10px; }
+      select, input, textarea {
+        color: #F5EDE0 !important;
+        background-color: #141210 !important;
+        border-color: #3A3028 !important;
+      }
+      select option {
+        background-color: #141210;
+        color: #F5EDE0;
+      }
+      ::placeholder {
+        color: #7A6A58 !important;
+        opacity: 1;
+      }
     `;
     document.head.appendChild(style);
     return () => { document.head.removeChild(link); document.head.removeChild(style); };
@@ -545,7 +558,7 @@ export default function SunoForge() {
         let tips = [];
         let variants = [];
         if (customOn && customTxt.trim()) {
-          style = truncateStyle(`Custom: ${customTxt.substring(0, 100)}`, 120);
+          style = truncateStyle(`Custom: ${customTxt.substring(0, 100)}`, 200);
           metatags = "[Intro]\n[Verse 1]\n[Chorus]\n[Bridge]\n[Outro]";
           tips = ["Ajoutez des métatags pour structurer vos paroles.", "Pensez à la dynamique (soft/loud)."];
           variants = [
@@ -580,8 +593,8 @@ export default function SunoForge() {
     setTimeout(() => setCopied(null), 2000);
   };
 
-  const charPct = result ? Math.min(100, (result.charCount / 120) * 100) : 0;
-  const charClr = !result ? "#2A2018" : result.charCount > 115 ? "#E05050" : result.charCount > 100 ? "#D4C030" : "#4A9E6E";
+  const charPct = result ? Math.min(100, (result.charCount / 200) * 100) : 0;
+  const charClr = !result ? "#2A2018" : result.charCount > 190 ? "#E05050" : result.charCount > 170 ? "#D4C030" : "#4A9E6E";
 
   const vgCount = (g) => VOCAL_GROUPS.find(x => x.g === g)?.items.filter(x => vocals.includes(x.t)).length || 0;
   const igCount = (catKey, g) => (INSTR[catKey]||[]).find(x => x.g === g)?.items.filter(x => instrs.includes(x.t)).length || 0;
@@ -589,13 +602,13 @@ export default function SunoForge() {
   const Left = () => (
     <div>
       <Sec>
-        <div style={{ display: "flex", background: "#0C0B09", border: "1px solid #1A1610", borderRadius: 7, padding: 3, alignSelf: "flex-start", gap: 0 }}>
+        <div style={{ display: "flex", background: "#0C0B09", border: "1px solid #2A241C", borderRadius: 7, padding: 3, alignSelf: "flex-start", gap: 0 }}>
           {[["guided", "🎛 Guidé"], ["custom", "✍️ Libre"]].map(([m, lbl]) => (
             <button key={m} onClick={() => setCustomOn(m === "custom")}
               style={{
-                background: (m === "custom") === customOn ? "#1E1A14" : "transparent",
-                border: (m === "custom") === customOn ? "1px solid #2E2818" : "1px solid transparent",
-                color: (m === "custom") === customOn ? "#E0D4B0" : "#7A6A58",
+                background: (m === "custom") === customOn ? "#2A241C" : "transparent",
+                border: (m === "custom") === customOn ? "1px solid #3A3028" : "1px solid transparent",
+                color: (m === "custom") === customOn ? "#E0D4B0" : "#8A7A68",
                 borderRadius: 5, padding: "5px 13px", fontSize: 12.5,
                 fontFamily: "'Crimson Pro',serif", cursor: "pointer", transition: "all .2s",
               }}>
@@ -611,12 +624,12 @@ export default function SunoForge() {
           <textarea value={customTxt} onChange={e => setCustomTxt(e.target.value)} rows={5}
             placeholder="Ex: Cérémonie druidique au crépuscule, vielle à roue, chœurs masculins profonds, ambiance rituelle et sacrée…"
             style={{
-              background: "#0C0B09", border: "1px solid #1E1A14", borderRadius: 7,
-              color: "#F0E6CC", fontFamily: "'Crimson Pro',serif", fontSize: 14,
+              background: "#141210", border: "1px solid #3A3028", borderRadius: 7,
+              color: "#F5EDE0", fontFamily: "'Crimson Pro',serif", fontSize: 14,
               padding: "9px 11px", width: "100%", lineHeight: 1.55,
               resize: "vertical", transition: "border-color .2s",
             }} />
-          <div style={{ fontSize: 11.5, color: "#7A6A58", fontStyle: "italic" }}>Genre, ambiance, instruments, voix, images évocatrices…</div>
+          <div style={{ fontSize: 11.5, color: "#A09078", fontStyle: "italic" }}>Genre, ambiance, instruments, voix, images évocatrices…</div>
         </Sec>
       ) : (<>
         <Sec>
@@ -626,8 +639,8 @@ export default function SunoForge() {
               <button key={k} onClick={() => handleCatChange(k)}
                 style={{
                   background: cat === k ? "#1A1510" : "#0C0B09",
-                  border: `1px solid ${cat === k ? v.accent : "#1A1610"}`,
-                  color: cat === k ? v.accent : "#7A6A58",
+                  border: `1px solid ${cat === k ? v.accent : "#3A3028"}`,
+                  color: cat === k ? v.accent : "#A89880",
                   borderRadius: 7, padding: "5px 11px", fontSize: 11.5,
                   fontFamily: "'Cinzel',serif", fontWeight: cat === k ? 600 : 400,
                   cursor: "pointer", whiteSpace: "nowrap", transition: "all .18s",
@@ -645,9 +658,9 @@ export default function SunoForge() {
             {SUBSTYLES[cat].map(s => (
               <button key={s} onClick={() => setSub(s)} className="hover-style"
                 style={{
-                  background: sub === s ? "#1C1810" : "#0C0B09",
-                  border: `1px solid ${sub === s ? accent : "#1A1610"}`,
-                  color: sub === s ? "#F0E6CC" : "#A09880",
+                  background: sub === s ? "#2A241C" : "#0C0B09",
+                  border: `1px solid ${sub === s ? accent : "#3A3028"}`,
+                  color: sub === s ? "#F5EDE0" : "#B0A088",
                   borderRadius: 7, padding: "7px 9px", fontSize: 11.5,
                   fontFamily: "'Crimson Pro',serif", textAlign: "left",
                   cursor: "pointer", transition: "all .15s", lineHeight: 1.3,
@@ -671,15 +684,15 @@ export default function SunoForge() {
         </Sec>
 
         <Sec>
-          <SLabel badge={`${vocals.length}/5`}>Voix</SLabel>
+          <SLabel badge={`${vocals.length}/10`}>Voix</SLabel>
           {VOCAL_GROUPS.map(({ g, items }) => (
             <AccGroup key={g} label={g} open={openVG.includes(g)} count={vgCount(g)}
               onToggle={() => setOpenVG(p => p.includes(g) ? p.filter(x => x !== g) : [...p, g])}>
               <div className="pill-wrap" style={{ paddingTop: 3 }}>
                 {items.map(({ t, l }) => (
                   <Pill key={t} label={l} active={vocals.includes(t)} accent="#7BA0B8"
-                    disabled={!vocals.includes(t) && vocals.length >= 5}
-                    onClick={() => setVocals(p => tog(p, t, 5))} />
+                    disabled={!vocals.includes(t) && vocals.length >= 10}
+                    onClick={() => setVocals(p => tog(p, t, 10))} />
                 ))}
               </div>
             </AccGroup>
@@ -746,15 +759,14 @@ export default function SunoForge() {
           </div>
         </Sec>
 
-        {/* NOUVELLE SECTION THÉORIE MUSICALE */}
         <Sec>
           <SLabel badge={key || bpm || timeSig ? "actif" : "optionnel"}>🎼 Théorie musicale</SLabel>
           <div style={{ marginBottom: 12 }}>
-            <div style={{ fontFamily: "'Cinzel',serif", fontSize: 9, color: "#8A7A68", marginBottom: 4, letterSpacing: ".1em" }}>Tonalité</div>
+            <div style={{ fontFamily: "'Cinzel',serif", fontSize: 9, color: "#A89880", marginBottom: 4, letterSpacing: ".1em" }}>Tonalité</div>
             <select value={key} onChange={e => setKey(e.target.value)}
               style={{
-                background: "#0C0B09", border: "1px solid #1E1A14", borderRadius: 6,
-                color: "#F0E6CC", fontFamily: "'Crimson Pro',serif", fontSize: 13,
+                background: "#141210", border: "1px solid #3A3028", borderRadius: 6,
+                color: "#F5EDE0", fontFamily: "'Crimson Pro',serif", fontSize: 13,
                 padding: "6px 8px", width: "100%", cursor: "pointer"
               }}>
               <option value="">-- Aucune --</option>
@@ -762,21 +774,21 @@ export default function SunoForge() {
             </select>
           </div>
           <div style={{ marginBottom: 12 }}>
-            <div style={{ fontFamily: "'Cinzel',serif", fontSize: 9, color: "#8A7A68", marginBottom: 4, letterSpacing: ".1em" }}>Tempo (BPM)</div>
+            <div style={{ fontFamily: "'Cinzel',serif", fontSize: 9, color: "#A89880", marginBottom: 4, letterSpacing: ".1em" }}>Tempo (BPM)</div>
             <input type="number" min="30" max="300" step="5" value={bpm} onChange={e => setBpm(e.target.value)}
               placeholder="ex: 120"
               style={{
-                background: "#0C0B09", border: "1px solid #1E1A14", borderRadius: 6,
-                color: "#F0E6CC", fontFamily: "'Crimson Pro',serif", fontSize: 13,
+                background: "#141210", border: "1px solid #3A3028", borderRadius: 6,
+                color: "#F5EDE0", fontFamily: "'Crimson Pro',serif", fontSize: 13,
                 padding: "6px 8px", width: "100%"
               }} />
           </div>
           <div>
-            <div style={{ fontFamily: "'Cinzel',serif", fontSize: 9, color: "#8A7A68", marginBottom: 4, letterSpacing: ".1em" }}>Signature rythmique</div>
+            <div style={{ fontFamily: "'Cinzel',serif", fontSize: 9, color: "#A89880", marginBottom: 4, letterSpacing: ".1em" }}>Signature rythmique</div>
             <select value={timeSig} onChange={e => setTimeSig(e.target.value)}
               style={{
-                background: "#0C0B09", border: "1px solid #1E1A14", borderRadius: 6,
-                color: "#F0E6CC", fontFamily: "'Crimson Pro',serif", fontSize: 13,
+                background: "#141210", border: "1px solid #3A3028", borderRadius: 6,
+                color: "#F5EDE0", fontFamily: "'Crimson Pro',serif", fontSize: 13,
                 padding: "6px 8px", width: "100%", cursor: "pointer"
               }}>
               <option value="">-- Aucune --</option>
@@ -789,9 +801,9 @@ export default function SunoForge() {
       <Sec noBorder>
         <button onClick={generateLocal} disabled={loading || (customOn && !customTxt.trim())} className="btn-gen"
           style={{
-            width: "100%", background: loading ? "#181410" : "#D4831A",
+            width: "100%", background: loading ? "#2A241C" : "#D4831A",
             border: "none", borderRadius: 9, padding: "12px 0",
-            color: loading ? "#5A5040" : "#0A0806",
+            color: loading ? "#A09078" : "#0A0806",
             fontFamily: "'Cinzel',serif", fontWeight: 700, fontSize: 13,
             letterSpacing: ".1em", cursor: loading ? "wait" : "pointer",
             display: "flex", alignItems: "center", justifyContent: "center", gap: 9,
@@ -808,21 +820,21 @@ export default function SunoForge() {
       {!result && !loading && !err && (
         <div style={{
           flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-          background: "#0C0B09", border: "1px dashed #1A1610", borderRadius: 10, padding: "40px 20px",
+          background: "#0C0B09", border: "1px dashed #2A241C", borderRadius: 10, padding: "40px 20px",
           minHeight: 200,
         }}>
           <div style={{ fontSize: 36, opacity: .15, marginBottom: 10 }}>ᚨ</div>
-          <div style={{ fontFamily: "'Cinzel',serif", fontSize: 12, color: "#4A3A28", letterSpacing: ".1em", textAlign: "center" }}>
+          <div style={{ fontFamily: "'Cinzel',serif", fontSize: 12, color: "#6A5A48", letterSpacing: ".1em", textAlign: "center" }}>
             Le prompt apparaîtra ici
           </div>
-          <div style={{ fontSize: 11, marginTop: 5, color: "#2E241C", textAlign: "center" }}>
+          <div style={{ fontSize: 11, marginTop: 5, color: "#4A3A28", textAlign: "center" }}>
             Configure le style et forge
           </div>
         </div>
       )}
 
       {err && (
-        <div style={{ background: "#1A0E0E", border: "1px solid #4A1A1A", borderRadius: 8, padding: 13, color: "#E07070", fontSize: 13 }}>
+        <div style={{ background: "#2A1010", border: "1px solid #6A2A2A", borderRadius: 8, padding: 13, color: "#E09090", fontSize: 13 }}>
           ⚠ {err}
         </div>
       )}
@@ -830,10 +842,10 @@ export default function SunoForge() {
       {loading && (
         <div style={{
           flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-          background: "#0C0B09", border: "1px solid #1A1610", borderRadius: 10, padding: "40px 20px", minHeight: 200,
+          background: "#0C0B09", border: "1px solid #2A241C", borderRadius: 10, padding: "40px 20px", minHeight: 200,
         }}>
           <div style={{ fontSize: 24, animation: "spin 2s linear infinite", display: "inline-block" }}>ᚠ</div>
-          <div style={{ fontFamily: "'Cinzel',serif", fontSize: 11, color: "#6A5A48", letterSpacing: ".1em", marginTop: 10 }}>
+          <div style={{ fontFamily: "'Cinzel',serif", fontSize: 11, color: "#8A7A68", letterSpacing: ".1em", marginTop: 10 }}>
             Les runes se forgent…
           </div>
         </div>
@@ -841,27 +853,27 @@ export default function SunoForge() {
 
       {result && (
         <div className="fade-in" style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          <div style={{ background: "#0C0B09", border: "1px solid #2A241C", borderRadius: 9, overflow: "hidden" }}>
-            <div style={{ padding: "8px 12px", borderBottom: "1px solid #1A1610", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 6 }}>
+          <div style={{ background: "#0E0C0A", border: "1px solid #3A3428", borderRadius: 9, overflow: "hidden" }}>
+            <div style={{ padding: "8px 12px", borderBottom: "1px solid #2A241C", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 6 }}>
               <span style={{ fontFamily: "'Cinzel',serif", fontSize: 9.5, color: "#C0B098", letterSpacing: ".15em", textTransform: "uppercase" }}>🎵 Champ Style</span>
               <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
                 <span style={{ fontSize: 11 }}>
                   <span style={{ color: charClr, fontWeight: 600 }}>{result.charCount}</span>
-                  <span style={{ color: "#4A3A28" }}>/120</span>
+                  <span style={{ color: "#6A5A48" }}>/200</span>
                 </span>
                 <CopyBtn text={result.style} id="style" copied={copied} onCopy={doCopy} />
               </div>
             </div>
-            <div style={{ height: 2, background: "#1A1610" }}>
+            <div style={{ height: 2, background: "#2A241C" }}>
               <div style={{ height: "100%", width: `${charPct}%`, background: charClr, transition: "all .5s" }} />
             </div>
-            <div style={{ padding: "11px 12px", fontFamily: "'Crimson Pro',serif", fontSize: 14.5, lineHeight: 1.65, color: "#F0E6CC" }}>
+            <div style={{ padding: "11px 12px", fontFamily: "'Crimson Pro',serif", fontSize: 14.5, lineHeight: 1.65, color: "#F5EDE0" }}>
               {result.style}
             </div>
           </div>
 
-          <div style={{ background: "#0C0B09", border: "1px solid #2A241C", borderRadius: 9, overflow: "hidden" }}>
-            <div style={{ padding: "8px 12px", borderBottom: "1px solid #1A1610", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ background: "#0E0C0A", border: "1px solid #3A3428", borderRadius: 9, overflow: "hidden" }}>
+            <div style={{ padding: "8px 12px", borderBottom: "1px solid #2A241C", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <span style={{ fontFamily: "'Cinzel',serif", fontSize: 9.5, color: "#C0B098", letterSpacing: ".15em", textTransform: "uppercase" }}>📋 Structure Paroles</span>
               <CopyBtn text={result.metatags} id="meta" copied={copied} onCopy={doCopy} />
             </div>
@@ -869,7 +881,7 @@ export default function SunoForge() {
               {result.metatags.split("\n").map((line, i) => (
                 <div key={i} style={{
                   fontSize: 13, lineHeight: 1.9,
-                  color: line.startsWith("[") ? "#7BA0B8" : "#A09880",
+                  color: line.startsWith("[") ? "#A0C0D8" : "#C0B098",
                   fontStyle: line.startsWith("(") ? "italic" : "normal",
                   fontFamily: "'Crimson Pro',serif",
                 }}>
@@ -880,31 +892,31 @@ export default function SunoForge() {
           </div>
 
           <div style={{ background: "#0C0F0A", border: "1px solid #2A2A1C", borderRadius: 9, padding: "9px 12px" }}>
-            <div style={{ fontFamily: "'Cinzel',serif", fontSize: 9.5, color: "#6A8A5A", letterSpacing: ".15em", textTransform: "uppercase", marginBottom: 8 }}>
+            <div style={{ fontFamily: "'Cinzel',serif", fontSize: 9.5, color: "#8AA87A", letterSpacing: ".15em", textTransform: "uppercase", marginBottom: 8 }}>
               💡 Conseils
             </div>
             {result.tips?.map((t, i) => (
-              <div key={i} style={{ display: "flex", gap: 6, marginBottom: 5, fontSize: 12.5, color: "#A8B898", fontFamily: "'Crimson Pro',serif", lineHeight: 1.5 }}>
-                <ChevronRight size={11} style={{ color: "#6A9A58", flexShrink: 0, marginTop: 3 }} />
+              <div key={i} style={{ display: "flex", gap: 6, marginBottom: 5, fontSize: 12.5, color: "#C8D8B8", fontFamily: "'Crimson Pro',serif", lineHeight: 1.5 }}>
+                <ChevronRight size={11} style={{ color: "#8AB868", flexShrink: 0, marginTop: 3 }} />
                 <span>{t}</span>
               </div>
             ))}
           </div>
 
           <div>
-            <div style={{ fontFamily: "'Cinzel',serif", fontSize: 9.5, color: "#6A5A48", letterSpacing: ".15em", textTransform: "uppercase", marginBottom: 7 }}>
+            <div style={{ fontFamily: "'Cinzel',serif", fontSize: 9.5, color: "#8A7A68", letterSpacing: ".15em", textTransform: "uppercase", marginBottom: 7 }}>
               🔄 Variantes
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
               {result.variants?.map((v, i) => (
-                <div key={i} style={{ background: "#0C0B09", border: "1px solid #2A241C", borderRadius: 8, overflow: "hidden" }}>
-                  <div style={{ padding: "6px 11px", borderBottom: "1px solid #1A1610", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div key={i} style={{ background: "#0E0C0A", border: "1px solid #3A3428", borderRadius: 8, overflow: "hidden" }}>
+                  <div style={{ padding: "6px 11px", borderBottom: "1px solid #2A241C", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <span style={{ fontFamily: "'Cinzel',serif", fontSize: 11, color: "#D4831A", fontWeight: 600 }}>{v.label}</span>
                     <CopyBtn text={v.style} id={`v${i}`} copied={copied} onCopy={doCopy} />
                   </div>
                   <div style={{ padding: "8px 11px" }}>
-                    <div style={{ fontSize: 13, color: "#D0C0A8", fontFamily: "'Crimson Pro',serif", marginBottom: 3, lineHeight: 1.5 }}>{v.style}</div>
-                    <div style={{ fontSize: 11.5, color: "#7A6A58", fontStyle: "italic", fontFamily: "'Crimson Pro',serif" }}>{v.desc}</div>
+                    <div style={{ fontSize: 13, color: "#E8D8C0", fontFamily: "'Crimson Pro',serif", marginBottom: 3, lineHeight: 1.5 }}>{v.style}</div>
+                    <div style={{ fontSize: 11.5, color: "#A09078", fontStyle: "italic", fontFamily: "'Crimson Pro',serif" }}>{v.desc}</div>
                   </div>
                 </div>
               ))}
@@ -916,23 +928,23 @@ export default function SunoForge() {
   );
 
   return (
-    <div style={{ height: "100dvh", display: "flex", flexDirection: "column", background: "#0A0908", color: "#F0E6CC", fontFamily: "'Crimson Pro',Georgia,serif", overflow: "hidden" }}>
+    <div style={{ height: "100dvh", display: "flex", flexDirection: "column", background: "#0A0908", color: "#F5EDE0", fontFamily: "'Crimson Pro',Georgia,serif", overflow: "hidden" }}>
       <div style={{
-        flexShrink: 0, borderBottom: "1px solid #1A1814", padding: "11px 18px",
+        flexShrink: 0, borderBottom: "1px solid #2A241C", padding: "11px 18px",
         background: "linear-gradient(180deg,#14100C 0%,#0A0908 100%)",
         display: "flex", alignItems: "center", gap: 11,
       }}>
-        <div style={{ width: 34, height: 34, borderRadius: 7, background: "linear-gradient(135deg,#3A2610,#181208)", border: "1px solid #342C1C", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 17 }}>ᚨ</div>
+        <div style={{ width: 34, height: 34, borderRadius: 7, background: "linear-gradient(135deg,#3A2610,#181208)", border: "1px solid #3A3028", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 17 }}>ᚨ</div>
         <div>
           <div style={{ fontFamily: "'Cinzel',serif", fontWeight: 700, fontSize: 15, color: "#D4831A", letterSpacing: ".07em" }}>SUNO FORGE</div>
-          <div style={{ fontSize: 9.5, color: "#6A5A48", letterSpacing: ".18em", textTransform: "uppercase" }}>Générateur de Prompts · 4.5</div>
+          <div style={{ fontSize: 9.5, color: "#A09078", letterSpacing: ".18em", textTransform: "uppercase" }}>Générateur de Prompts · 4.5</div>
         </div>
         <div style={{ marginLeft: "auto", display: "flex", gap: 5, flexWrap: "wrap", justifyContent: "flex-end" }}>
-          {vocals.length > 0 && <div style={{ background: "#0E1520", border: "1px solid #1E3050", borderRadius: 20, padding: "2px 9px", fontSize: 10.5, color: "#7BA0B8", fontFamily: "'Cinzel',serif" }}>{vocals.length} voix</div>}
-          {instrs.length > 0 && <div style={{ background: "#1A1410", border: `1px solid ${accent}55`, borderRadius: 20, padding: "2px 9px", fontSize: 10.5, color: accent, fontFamily: "'Cinzel',serif" }}>{instrs.length} instr.</div>}
-          {techs.length > 0  && <div style={{ background: "#140E1A", border: "1px solid #2E1E50", borderRadius: 20, padding: "2px 9px", fontSize: 10.5, color: "#9B6FD4", fontFamily: "'Cinzel',serif" }}>{techs.length} tech.</div>}
-          {moods.length > 0  && <div style={{ background: "#141008", border: "1px solid #3A2810", borderRadius: 20, padding: "2px 9px", fontSize: 10.5, color: "#C0902A", fontFamily: "'Cinzel',serif" }}>{moods.length} mood</div>}
-          {(key || bpm || timeSig) && <div style={{ background: "#141008", border: "1px solid #3A5050", borderRadius: 20, padding: "2px 9px", fontSize: 10.5, color: "#6AB0B0", fontFamily: "'Cinzel',serif" }}>🎵 théorie</div>}
+          {vocals.length > 0 && <div style={{ background: "#1A2028", border: "1px solid #3A5A78", borderRadius: 20, padding: "2px 9px", fontSize: 10.5, color: "#A0C8E8", fontFamily: "'Cinzel',serif" }}>{vocals.length} voix</div>}
+          {instrs.length > 0 && <div style={{ background: "#2A1E18", border: `1px solid ${accent}99`, borderRadius: 20, padding: "2px 9px", fontSize: 10.5, color: accent, fontFamily: "'Cinzel',serif" }}>{instrs.length} instr.</div>}
+          {techs.length > 0  && <div style={{ background: "#1E1828", border: "1px solid #6A4EA0", borderRadius: 20, padding: "2px 9px", fontSize: 10.5, color: "#C8A8F0", fontFamily: "'Cinzel',serif" }}>{techs.length} tech.</div>}
+          {moods.length > 0  && <div style={{ background: "#2A2018", border: "1px solid #C0902A", borderRadius: 20, padding: "2px 9px", fontSize: 10.5, color: "#E0B050", fontFamily: "'Cinzel',serif" }}>{moods.length} mood</div>}
+          {(key || bpm || timeSig) && <div style={{ background: "#182828", border: "1px solid #5AA0A0", borderRadius: 20, padding: "2px 9px", fontSize: 10.5, color: "#90D0D0", fontFamily: "'Cinzel',serif" }}>🎵 théorie</div>}
         </div>
       </div>
       <div className="sf-main">
