@@ -106,7 +106,7 @@ Le générateur produit un prompt structuré comme suit :
 Viking Folk Metal, Épique, Sombre, hurdy-gurdy, tagelharpa, palm muting, blast beats, High production, C minor, 140 BPM, 6/8, male vocals
 ```
 ## 📁 Structure du projet
-text
+```text
 suno-forge/
 ├── public/
 │   └── index.html
@@ -116,6 +116,13 @@ suno-forge/
 ├── package.json
 ├── .gitignore
 └── README.md
+```
+## 🎨 Technologies utilisées
+- React 18 – Hooks (useState, useEffect)
+- CSS-in-JS – Styles inline avec animations
+- Lucide React – Bibliothèque d’icônes
+- Google Fonts – Cinzel (titres), Crimson Pro (corps)
+- Create React App – Outillage et build
 
 ## 🛠 Personnalisation
 Vous pouvez facilement enrichir les données dans src/App.js :
