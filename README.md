@@ -75,20 +75,25 @@ npm start
 ```
 L’application sera accessible sur http://localhost:3000.
 
-## 🧙 Utilisation
+Build pour la production
+bash
+npm run build
+Les fichiers optimisés seront générés dans le dossier /build.
+
+🧙 Utilisation
 Choisissez le mode : “Guidé” (sélecteurs) ou “Libre” (description texte).
 
 Mode guidé :
 - Sélectionnez une catégorie (5 runes disponibles).
-- Choisissez un sous‑style.
-- Ajoutez jusqu’à 5 moods et 5 tags vocaux.
+- Choisissez un sous‑style parmi plus de 35 options.
+- Ajoutez jusqu’à 5 moods et jusqu’à 10 tags vocaux.
 - Sélectionnez des instruments (affichage hiérarchique par groupes).
 - Affinez avec des techniques de jeu (apparaissent dynamiquement selon les instruments choisis).
 - Définissez la production, le tempo (prédéfini ou BPM personnalisé), la tonalité et la signature rythmique.
 - Cliquez sur “FORGER LE PROMPT”.
 
 Récupérez le résultat :
-- Champ style : compteur 120 caractères + jauge colorée (vert <100, jaune >100, rouge >115)
+- Champ style : compteur 200 caractères + jauge colorée (vert <170, jaune 170-190, rouge >190)
 - Métatags : structure de paroles prête à copier
 - Conseils : astuces pour améliorer vos prompts
 - Variantes : trois versions alternatives (Épique, Intime, Aggressive)
