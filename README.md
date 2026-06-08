@@ -80,7 +80,7 @@ bash
 npm run build
 Les fichiers optimisés seront générés dans le dossier /build.
 
-🧙 Utilisation
+## 🧙 Utilisation
 Choisissez le mode : “Guidé” (sélecteurs) ou “Libre” (description texte).
 
 Mode guidé :
