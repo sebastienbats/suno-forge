@@ -46,11 +46,19 @@ Plus de 200 techniques associées aux instruments (palm muting, blast beats, fin
 - **Tempo (BPM)** : réglage de 30 à 300 BPM (pas de 5)
 - **Signature rythmique** : 12 signatures avec **recommandations par catégorie**. Les signatures les plus courantes pour le style choisi sont mises en avant.
 
+### 📝 Éditeur de métatags (nouveau)
+Vous pouvez désormais construire visuellement la structure de vos paroles avec des tags Suno 4.5 au format `[section: description]` :
+
+- **Tags structurels** : [Intro], [Verse 1], [Verse 2], [Pre-Chorus], [Chorus], [Post-Chorus], [Bridge], [Outro], [Hook], [Refrain], [Interlude], [Breakdown], [Build-up], [Drop], [Solo], [Instrumental], [Fade out]
+- **Tags dynamiques** (vocaux, instrumentaux, d'intensité) : [Spoken word], [Whispered], [Screamed], [Growled], [Choir], [Guitar solo], [Drum break], [Orchestral swell], [quiet], [loud], [epic], [atmospheric], [aggressive], [dark], [ritualistic]… (plus de 40 tags).
+- **Règles** : 1 tag structurel + jusqu’à 3 tags dynamiques par section. L’éditeur vous permet d’ajouter, réorganiser (flèches) et supprimer des sections. Un aperçu en temps réel montre le format final.
+- **Exemple** : `[Chorus]` + `[epic]` + `[choir]` → `[chorus: epic, choir]
+
 ### 🔧 Autres fonctionnalités
 - **Mode libre** : saisie textuelle complète (description personnalisée)
 - **Génération locale** : aucun appel API externe – prompts générés instantanément
 - **Contrainte Suno respectée** : champ `style` limité à **200 caractères** avec compteur et barre de progression colorée (vert <170, orange 170-190, rouge >190)
-- **Métatags pour paroles** : structure suggérée (`[Intro]`, `[Verse]`, `Pre-Chorus`, `[Chorus]`, `[Bridge]`, `[Outro]`, `[Solo]`, `[Breakdown]`, etc.) adaptée à chaque catégorie
+- **Métatags intelligents** : si aucune section n’est définie, une structure par défaut adaptée à la catégorie est fournie (au format `[section: description]`).
 - **Conseils dynamiques** : astuces personnalisées selon vos sélections
 - **Variantes de prompt** : trois versions alternatives (Épique, Intime, Aggressive) prêtes à copier
 - **Interface responsive** : deux colonnes sur desktop, bascule en colonne unique sur mobile
@@ -94,11 +102,12 @@ Mode guidé :
 - Sélectionnez des instruments (affichage hiérarchique par groupes).
 - Affinez avec des techniques de jeu (apparaissent dynamiquement selon les instruments choisis).
 - Définissez la production, le tempo (prédéfini ou BPM personnalisé), la tonalité (avec recommandations) et la signature rythmique (avec recommandations).
+- Construisez votre structure de paroles avec l’éditeur de métatags : ajoutez des sections (tag structurel + jusqu’à 3 tags dynamiques), réorganisez‑les, visualisez l’aperçu.
 - Cliquez sur “FORGER LE PROMPT”.
 
 Récupérez le résultat :
 - Champ style : compteur 200 caractères + jauge colorée (vert <170, jaune 170-190, rouge >190)
-- Métatags : structure de paroles prête à copier
+- Métatags : structure formatée selon les recommandations Suno 4.5.
 - Conseils : astuces pour améliorer vos prompts
 - Variantes : trois versions alternatives (Épique, Intime, Aggressive)
 
@@ -110,6 +119,16 @@ Le générateur produit un prompt structuré comme suit :
 ```text
 Viking Folk Metal, Épique, Sombre, hurdy-gurdy, tagelharpa, palm muting, blast beats, High production, C minor, 140 BPM, 6/8, male vocals, female choir
 ```
+Et une structure de paroles typique :
+```text
+[intro: atmospheric, heavy guitars]
+[verse 1: growled, aggressive]
+[pre-chorus: building]
+[chorus: clean vocals, epic]
+[breakdown: heavy, slow]
+[solo: guitar, intense]
+[outro: fade out, atmospheric]
+```
 ## 🛠 Personnalisation
 Vous pouvez facilement enrichir les données dans src/App.js :
 
@@ -120,8 +139,10 @@ Vous pouvez facilement enrichir les données dans src/App.js :
 |Techniques |TECH|Associer des techniques à un instrument (clé = tag exact)|
 |Tonalités	|KEYS|Ajouter des tonalités supplémentaires|
 |Tonalités recommandées|RECOMMENDED_KEYS|Définir les tonalités pertinentes par catégorie|
-|Signatures	TIME_SIGS	Ajouter des signatures rythmiques|
+|Signatures	|TIME_SIGS|	Ajouter des signatures rythmiques|
 |Signatures recommandées|RECOMMENDED_TIME_SIGS|Définir les signatures pertinentes par catégorie|
+|Tags structurels	|STRUCTURAL_TAGS|Ajouter/modifier des tags de section|
+|Tags dynamiques	|DYNAMIC_TAGS|Ajouter des tags vocaux, instrumentaux ou d’intensité|
 |Couleurs|CATS|Modifier les couleurs d’accentuation|
 |Limites|tog()|Ajuster les limites (voix, moods, etc.)|
 
