@@ -48,9 +48,25 @@ Plus de 200 techniques associées aux instruments (palm muting, blast beats, fin
 
 ### 📝 Éditeur de métatags (nouveau)
 Vous pouvez désormais construire visuellement la structure de vos paroles avec des tags Suno 4.5 au format `[section: description]` :
+- **Tags structurels** (17)
+`[Intro]`, `[Verse 1]`, `[Verse 2]`, `[Pre-Chorus]`, `[Chorus]`, `[Post-Chorus]`, `[Bridge]`, `[Outro]`, `[Hook]`, `[Refrain]`, `[Interlude]`, `[Breakdown]`, `[Build-up]`, `[Drop]`, `[Solo]`, `[Instrumental]`, `[Fade out]`
 
-- **Tags structurels** : [Intro], [Verse 1], [Verse 2], [Pre-Chorus], [Chorus], [Post-Chorus], [Bridge], [Outro], [Hook], [Refrain], [Interlude], [Breakdown], [Build-up], [Drop], [Solo], [Instrumental], [Fade out]
-- **Tags dynamiques** (vocaux, instrumentaux, d'intensité) : [Spoken word], [Whispered], [Screamed], [Growled], [Choir], [Guitar solo], [Drum break], [Orchestral swell], [quiet], [loud], [epic], [atmospheric], [aggressive], [dark], [ritualistic]… (plus de 40 tags).
+- **Tags vocaux** (15) : `[Spoken word]`, `[Narration]`, `[Whispered]`, `[Breathy]`, `[Chanted]`, `[Screamed]`, `[Growled]`, `[A cappella]`, `[Falsetto]`, `[Choir]`, `[Harmonized]`, `[Call and response]`, `[Operatic]`, `[Throat singing]`, `[Joik]`
+
+**Tags instrumentaux** (8) : `[Guitar solo]`, `[Drum break]`, `[Bass drop]`, `[Piano interlude]`, `[Orchestral swell]`, `[Flute melody]`, `[Violin lead]`, `[Ambient passage]`
+
+**Tags d'intensité** (22) : `[quiet]`, `[loud]`, `[soft]`, `[heavy]`, `[heavy guitars]`, `[epic]`, `[intimate]`, `[aggressive]`, `[intense]`, `[atmospheric]`, `[ethereal]`, `[haunting]`, `[triumphant]`, `[melancholic]`, `[dark]`, `[ritualistic]`, `[energetic]`, `[driving]`, `[slow]`, `[building]`, `[climax]`, `[tense]`
+
+#### Fonctionnalités de l'éditeur
+- **Ajout de sections** : choisissez un tag structurel + jusqu'à 3 tags dynamiques par section
+- **Réorganisation** : flèches ↑↓ pour modifier l'ordre des sections
+- **Duplication** : bouton Copier (📋) pour dupliquer une section existante
+- **Suppression** : bouton Corbeille (🗑️) pour retirer une section
+- **Aperçu en temps réel** : visualisation du format final `[section: description]`
+- **Sauvegarde** : enregistrez vos structures personnalisées dans le navigateur (localStorage)
+- **Gestion des templates** : chargez ou supprimez vos structures sauvegardées
+- **Export JSON** : téléchargez votre structure au format JSON
+- **Import JSON** : chargez une structure depuis un fichier JSON précédemment exporté
 - **Règles** : 1 tag structurel + jusqu’à 3 tags dynamiques par section. L’éditeur vous permet d’ajouter, réorganiser (flèches) et supprimer des sections. Un aperçu en temps réel montre le format final.
 - **Exemple** : `[Chorus]` + `[epic]` + `[choir]` → `[chorus: epic, choir]`
 
@@ -93,25 +109,29 @@ npm run build
 Les fichiers optimisés seront générés dans le dossier /build.
 
 ## 🧙 Utilisation
-Choisissez le mode : “Guidé” (sélecteurs) ou “Libre” (description texte).
-
-Mode guidé :
+1. Choisissez le mode : “Guidé” (sélecteurs) ou “Libre” (description texte).
+2. Mode guidé :
 - Sélectionnez une catégorie (5 runes disponibles).
 - Choisissez un sous‑style parmi plus de 35 options.
 - Ajoutez jusqu’à 5 moods et jusqu’à 10 tags vocaux.
 - Sélectionnez des instruments (affichage hiérarchique par groupes).
 - Affinez avec des techniques de jeu (apparaissent dynamiquement selon les instruments choisis).
 - Définissez la production, le tempo (prédéfini ou BPM personnalisé), la tonalité (avec recommandations) et la signature rythmique (avec recommandations).
-- Construisez votre structure de paroles avec l’éditeur de métatags : ajoutez des sections (tag structurel + jusqu’à 3 tags dynamiques), réorganisez‑les, visualisez l’aperçu.
-- Cliquez sur “FORGER LE PROMPT”.
-
-Récupérez le résultat :
+3. Construisez votre structure de paroles avec l’éditeur de métatags :
+- Ajoutez des sections : choisissez un tag structurel (ex: [Chorus]) et jusqu’à 3 tags dynamiques (ex: [epic], [choir])
+- Réorganisez les sections avec les flèches ↑↓
+- Dupliquez une section avec le bouton Copier (📋)
+- Supprimez une section avec le bouton Corbeille (🗑️)
+- Sauvegardez votre structure pour une utilisation ultérieure
+- Exportez/Importez des structures au format JSON
+- Visualisez l’aperçu en temps réel du format final
+4. Cliquez sur “FORGER LE PROMPT”.
+5. Récupérez le résultat :
 - Champ style : compteur 200 caractères + jauge colorée (vert <170, jaune 170-190, rouge >190)
 - Métatags : structure formatée selon les recommandations Suno 4.5.
 - Conseils : astuces pour améliorer vos prompts
 - Variantes : trois versions alternatives (Épique, Intime, Aggressive)
-
-Copiez n’importe quel bloc via les boutons dédiés.
+6. Copiez n’importe quel bloc via les boutons dédiés.
 
 ## 📊 Aperçu du prompt généré
 Le générateur produit un prompt structuré comme suit :
@@ -146,6 +166,9 @@ Vous pouvez facilement enrichir les données dans src/App.js :
 |Couleurs|CATS|Modifier les couleurs d’accentuation|
 |Limites|tog()|Ajuster les limites (voix, moods, etc.)|
 
+## 💾 Persistance des données
+Les structures de métatags sauvegardées sont stockées dans le localStorage du navigateur. Elles persistent après un rafraîchissement de la page et sont propres à chaque navigateur.
+
 ## 📁 Structure du projet
 ```text
 suno-forge/
@@ -161,10 +184,10 @@ suno-forge/
 ## 🎨 Technologies utilisées
 - React 18 – Hooks (useState, useEffect)
 - CSS-in-JS – Styles inline avec animations
-- Lucide React – Bibliothèque d’icônes
+- Lucide React – Bibliothèque d’icônes (Copy, Check, Wand2, Plus, Trash2, Save, Upload, Download, etc.)
 - Google Fonts – Cinzel (titres), Crimson Pro (corps)
 - Create React App – Outillage et build
-
+- localStorage – Persistance des templates de métatags
 ## 🌐 Compatibilité
 Navigateur	Version minimum
 Chrome	90+
