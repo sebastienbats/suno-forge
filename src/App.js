@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Copy, Check, Wand2, RotateCcw, ChevronRight, ChevronDown, Plus, Trash2 } from "lucide-react";
+import { Copy, Check, Wand2, RotateCcw, ChevronRight, ChevronDown, Plus, Trash2, Save, Upload, Download } from "lucide-react";
 
 /* ══════════════════════════════════════════════════════════
    DATA – Catégories, sous-styles, voix, instruments, techniques
@@ -369,7 +369,6 @@ const buildStyleLocal = (sub, moods, instrs, techs, prod, tempo, vocals, key, bp
   return truncateStyle(style, 200);
 };
 
-// Génération des métatags à partir des sections personnalisées
 const buildMetatagsFromSections = (sections, cat, sub) => {
   if (!sections.length) {
     return buildMetatagsLocal(cat, sub);
@@ -383,33 +382,11 @@ const buildMetatagsFromSections = (sections, cat, sub) => {
 
 const buildMetatagsLocal = (cat, sub) => {
   const defaults = {
-    metal: `[intro: atmospheric, heavy guitars]
-[verse 1: growled, aggressive]
-[pre-chorus: building]
-[chorus: clean vocals, epic]
-[breakdown: heavy, slow]
-[solo: guitar, intense]
-[outro: fade out, atmospheric]`,
-    cinematic: `[intro: strings, atmospheric]
-[build-up: orchestral swell]
-[climax: epic, choir]
-[bridge: quiet, intimate]
-[outro: resolution, fade]`,
-    folk: `[intro: folk melody, acoustic]
-[verse 1: storytelling, gentle]
-[chorus: harmonies, uplifting]
-[instrumental: flute solo]
-[outro: acoustic fade]`,
-    electronic: `[intro: synth pad, atmospheric]
-[build-up: drum roll, rising]
-[drop: heavy bass, energetic]
-[bridge: minimal, stripped]
-[outro: fade, ambient]`,
-    urban: `[intro: sampled vinyl, chill]
-[verse: spoken word, smooth]
-[chorus: melodic, rnb]
-[bridge: emotional, soft]
-[outro: instrumental fade]`
+    metal: `[intro: atmospheric, heavy guitars]\n[verse 1: growled, aggressive]\n[pre-chorus: building]\n[chorus: clean vocals, epic]\n[breakdown: heavy, slow]\n[solo: guitar, intense]\n[outro: fade out, atmospheric]`,
+    cinematic: `[intro: strings, atmospheric]\n[build-up: orchestral swell]\n[climax: epic, choir]\n[bridge: quiet, intimate]\n[outro: resolution, fade]`,
+    folk: `[intro: folk melody, acoustic]\n[verse 1: storytelling, gentle]\n[chorus: harmonies, uplifting]\n[instrumental: flute solo]\n[outro: acoustic fade]`,
+    electronic: `[intro: synth pad, atmospheric]\n[build-up: drum roll, rising]\n[drop: heavy bass, energetic]\n[bridge: minimal, stripped]\n[outro: fade, ambient]`,
+    urban: `[intro: sampled vinyl, chill]\n[verse: spoken word, smooth]\n[chorus: melodic, rnb]\n[bridge: emotional, soft]\n[outro: instrumental fade]`
   };
   return defaults[cat] || `[intro]\n[verse 1]\n[chorus]\n[bridge]\n[outro]`;
 };
@@ -425,7 +402,6 @@ const buildTipsLocal = (moods, instrs, techs) => {
   return tips.slice(0, 4);
 };
 
-// Variantes dynamiques (corrigées)
 const buildVariantsLocal = (sub, moods, instrs, techs, prod, tempo, vocals, key, bpm, timeSig) => {
   const baseStyle = buildStyleLocal(sub, moods, instrs, techs, prod, tempo, vocals, key, bpm, timeSig);
   const variants = [
@@ -523,11 +499,20 @@ const Sec = ({ children, noBorder }) => (
   </div>
 );
 
-// Éditeur de métatags
+/* ══════════════════════════════════════════════════════════
+   META TAG EDITOR AVEC SAUVEGARDE, IMPORT, DUPLICATION
+══════════════════════════════════════════════════════════ */
+
 const MetaTagEditor = ({ sections, onSectionsChange, accent }) => {
   const [selectedStructural, setSelectedStructural] = useState("[Verse 1]");
   const [selectedDynamics, setSelectedDynamics] = useState([]);
   const [showDynamicSelector, setShowDynamicSelector] = useState(false);
+  const [savedStructures, setSavedStructures] = useState(() => {
+    const saved = localStorage.getItem("suno_metatag_templates");
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [templateName, setTemplateName] = useState("");
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
 
   const addSection = () => {
     if (!selectedStructural) return;
@@ -543,6 +528,17 @@ const MetaTagEditor = ({ sections, onSectionsChange, accent }) => {
 
   const removeSection = (id) => {
     onSectionsChange(sections.filter(s => s.id !== id));
+  };
+
+  const duplicateSection = (index) => {
+    const sectionToDuplicate = sections[index];
+    const newSection = {
+      ...sectionToDuplicate,
+      id: Date.now()
+    };
+    const newSections = [...sections];
+    newSections.splice(index + 1, 0, newSection);
+    onSectionsChange(newSections);
   };
 
   const moveSection = (index, direction) => {
@@ -571,8 +567,153 @@ const MetaTagEditor = ({ sections, onSectionsChange, accent }) => {
     return desc ? `[${structural}: ${desc}]` : `[${structural}]`;
   };
 
+  // Sauvegarder la structure actuelle
+  const saveCurrentStructure = () => {
+    if (!templateName.trim()) {
+      alert("Veuillez donner un nom à votre structure");
+      return;
+    }
+    if (sections.length === 0) {
+      alert("Aucune section à sauvegarder");
+      return;
+    }
+    const newTemplate = {
+      id: Date.now(),
+      name: templateName,
+      sections: sections,
+      createdAt: new Date().toLocaleDateString()
+    };
+    const updated = [...savedStructures, newTemplate];
+    setSavedStructures(updated);
+    localStorage.setItem("suno_metatag_templates", JSON.stringify(updated));
+    setTemplateName("");
+    setShowSaveDialog(false);
+  };
+
+  // Charger une structure sauvegardée
+  const loadStructure = (template) => {
+    if (confirm(`Charger "${template.name}" ? Cela remplacera la structure actuelle.`)) {
+      onSectionsChange(template.sections);
+    }
+  };
+
+  // Supprimer une structure sauvegardée
+  const deleteTemplate = (id) => {
+    if (confirm("Supprimer cette structure ?")) {
+      const updated = savedStructures.filter(t => t.id !== id);
+      setSavedStructures(updated);
+      localStorage.setItem("suno_metatag_templates", JSON.stringify(updated));
+    }
+  };
+
+  // Exporter la structure actuelle en JSON
+  const exportStructure = () => {
+    if (sections.length === 0) {
+      alert("Aucune structure à exporter");
+      return;
+    }
+    const data = {
+      name: "Exported structure",
+      sections: sections,
+      exportDate: new Date().toISOString()
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `suno_structure_${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // Importer une structure depuis un fichier JSON
+  const importStructure = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const data = JSON.parse(e.target.result);
+        if (data.sections && Array.isArray(data.sections)) {
+          const importedSections = data.sections.map(section => ({
+            ...section,
+            id: Date.now() + Math.random()
+          }));
+          if (confirm(`Importer ${importedSections.length} section(s) ? Cela remplacera la structure actuelle.`)) {
+            onSectionsChange(importedSections);
+          }
+        } else {
+          alert("Format de fichier invalide");
+        }
+      } catch (error) {
+        alert("Erreur lors de l'import du fichier");
+      }
+    };
+    reader.readAsText(file);
+    event.target.value = "";
+  };
+
   return (
     <div style={{ marginTop: 8 }}>
+      {/* Barre d'outils de gestion des structures */}
+      <div style={{ display: "flex", gap: 6, marginBottom: 10, flexWrap: "wrap" }}>
+        <button onClick={exportStructure}
+          style={{ background: "#141210", border: "1px solid #3A3028", borderRadius: 6, color: "#A0C0D8", fontSize: 10, padding: "4px 8px", cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}>
+          <Download size={12} /> Exporter
+        </button>
+        <label style={{ background: "#141210", border: "1px solid #3A3028", borderRadius: 6, color: "#A0C0D8", fontSize: 10, padding: "4px 8px", cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}>
+          <Upload size={12} /> Importer
+          <input type="file" accept=".json" onChange={importStructure} style={{ display: "none" }} />
+        </label>
+        <button onClick={() => setShowSaveDialog(true)} disabled={sections.length === 0}
+          style={{ background: sections.length === 0 ? "#0C0B09" : "#141210", border: "1px solid #3A3028", borderRadius: 6, color: sections.length === 0 ? "#5A4A38" : "#D0C0A8", fontSize: 10, padding: "4px 8px", cursor: sections.length === 0 ? "not-allowed" : "pointer", display: "flex", alignItems: "center", gap: 4 }}>
+          <Save size={12} /> Sauvegarder
+        </button>
+      </div>
+
+      {/* Dialogue de sauvegarde */}
+      {showSaveDialog && (
+        <div style={{ background: "#1A1612", border: "1px solid #3A3028", borderRadius: 6, padding: 8, marginBottom: 10 }}>
+          <div style={{ fontSize: 11, color: "#D0C0A8", marginBottom: 6 }}>Nom de la structure :</div>
+          <input type="text" value={templateName} onChange={e => setTemplateName(e.target.value)}
+            placeholder="ex: Metal Epic, Cinematic Default, etc."
+            style={{ background: "#0C0B09", border: "1px solid #3A3028", borderRadius: 4, color: "#F5EDE0", fontSize: 12, padding: "5px 8px", width: "100%", marginBottom: 8 }} />
+          <div style={{ display: "flex", gap: 6 }}>
+            <button onClick={saveCurrentStructure}
+              style={{ background: "#D4831A", border: "none", borderRadius: 4, color: "#0A0806", fontSize: 11, padding: "4px 10px", cursor: "pointer" }}>
+              Sauvegarder
+            </button>
+            <button onClick={() => { setShowSaveDialog(false); setTemplateName(""); }}
+              style={{ background: "#2A241C", border: "1px solid #3A3028", borderRadius: 4, color: "#A09078", fontSize: 11, padding: "4px 10px", cursor: "pointer" }}>
+              Annuler
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Liste des structures sauvegardées */}
+      {savedStructures.length > 0 && (
+        <div style={{ marginBottom: 12 }}>
+          <div style={{ fontFamily: "'Cinzel',serif", fontSize: 9, color: "#A89880", marginBottom: 4 }}>📦 Structures sauvegardées</div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+            {savedStructures.map(template => (
+              <div key={template.id} style={{ background: "#141210", border: "1px solid #2A241C", borderRadius: 6, padding: "4px 8px", display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ fontSize: 10, color: "#D0C0A8" }}>{template.name}</span>
+                <button onClick={() => loadStructure(template)}
+                  style={{ background: "transparent", border: "none", color: "#7BA0B8", cursor: "pointer", fontSize: 9 }}>
+                  Charger
+                </button>
+                <button onClick={() => deleteTemplate(template.id)}
+                  style={{ background: "transparent", border: "none", color: "#E05050", cursor: "pointer", fontSize: 9 }}>
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Ajout de section */}
       <div style={{ background: "#141210", borderRadius: 8, padding: 10, marginBottom: 12 }}>
         <div style={{ fontFamily: "'Cinzel',serif", fontSize: 9, color: "#A89880", marginBottom: 6 }}>➕ Ajouter une section</div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
@@ -621,6 +762,8 @@ const MetaTagEditor = ({ sections, onSectionsChange, accent }) => {
           </div>
         )}
       </div>
+
+      {/* Liste des sections avec duplication */}
       {sections.length > 0 && (
         <div>
           <div style={{ fontFamily: "'Cinzel',serif", fontSize: 9, color: "#A89880", marginBottom: 6 }}>📋 Structure personnalisée</div>
@@ -638,7 +781,12 @@ const MetaTagEditor = ({ sections, onSectionsChange, accent }) => {
                   </span>
                 )}
               </div>
-              <button onClick={() => removeSection(section.id)} style={{ background: "transparent", border: "none", color: "#E05050", cursor: "pointer" }}>
+              <button onClick={() => duplicateSection(idx)}
+                style={{ background: "transparent", border: "none", color: "#4A9E6E", cursor: "pointer" }}>
+                <Copy size={14} />
+              </button>
+              <button onClick={() => removeSection(section.id)}
+                style={{ background: "transparent", border: "none", color: "#E05050", cursor: "pointer" }}>
                 <Trash2 size={14} />
               </button>
             </div>
