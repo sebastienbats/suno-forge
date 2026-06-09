@@ -53,10 +53,12 @@ Vous pouvez désormais construire visuellement la structure de vos paroles avec 
 
 - **Tags vocaux** (15) : `[Spoken word]`, `[Narration]`, `[Whispered]`, `[Breathy]`, `[Chanted]`, `[Screamed]`, `[Growled]`, `[A cappella]`, `[Falsetto]`, `[Choir]`, `[Harmonized]`, `[Call and response]`, `[Operatic]`, `[Throat singing]`, `[Joik]`
 
-**Tags instrumentaux** (8) : `[Guitar solo]`, `[Drum break]`, `[Bass drop]`, `[Piano interlude]`, `[Orchestral swell]`, `[Flute melody]`, `[Violin lead]`, `[Ambient passage]`
+- **Tags instrumentaux** (8) : `[Guitar solo]`, `[Drum break]`, `[Bass drop]`, `[Piano interlude]`, `[Orchestral swell]`, `[Flute melody]`, `[Violin lead]`, `[Ambient passage]`
 
-**Tags d'intensité** (22) : `[quiet]`, `[loud]`, `[soft]`, `[heavy]`, `[heavy guitars]`, `[epic]`, `[intimate]`, `[aggressive]`, `[intense]`, `[atmospheric]`, `[ethereal]`, `[haunting]`, `[triumphant]`, `[melancholic]`, `[dark]`, `[ritualistic]`, `[energetic]`, `[driving]`, `[slow]`, `[building]`, `[climax]`, `[tense]`
-
+- **Tags d'intensité** (22) : `[quiet]`, `[loud]`, `[soft]`, `[heavy]`, `[heavy guitars]`, `[epic]`, `[intimate]`, `[aggressive]`, `[intense]`, `[atmospheric]`, `[ethereal]`, `[haunting]`, `[triumphant]`, `[melancholic]`, `[dark]`, `[ritualistic]`, `[energetic]`, `[driving]`, `[slow]`, `[building]`, `[climax]`, `[tense]`
+- **Règles** : 1 tag structurel + jusqu’à 3 tags dynamiques par section. L’éditeur vous permet d’ajouter, réorganiser (flèches) et supprimer des sections. Un aperçu en temps réel montre le format final.
+- **Exemple** : `[Chorus]` + `[epic]` + `[choir]` → `[chorus: epic, choir]`
+  
 #### Fonctionnalités de l'éditeur
 - **Ajout de sections** : choisissez un tag structurel + jusqu'à 3 tags dynamiques par section
 - **Réorganisation** : flèches ↑↓ pour modifier l'ordre des sections
@@ -67,8 +69,6 @@ Vous pouvez désormais construire visuellement la structure de vos paroles avec 
 - **Gestion des templates** : chargez ou supprimez vos structures sauvegardées
 - **Export JSON** : téléchargez votre structure au format JSON
 - **Import JSON** : chargez une structure depuis un fichier JSON précédemment exporté
-- **Règles** : 1 tag structurel + jusqu’à 3 tags dynamiques par section. L’éditeur vous permet d’ajouter, réorganiser (flèches) et supprimer des sections. Un aperçu en temps réel montre le format final.
-- **Exemple** : `[Chorus]` + `[epic]` + `[choir]` → `[chorus: epic, choir]`
 
 ### 🔧 Autres fonctionnalités
 - **Mode libre** : saisie textuelle complète (description personnalisée)
