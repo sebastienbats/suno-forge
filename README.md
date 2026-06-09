@@ -52,7 +52,7 @@ Vous pouvez désormais construire visuellement la structure de vos paroles avec 
 - **Tags structurels** : [Intro], [Verse 1], [Verse 2], [Pre-Chorus], [Chorus], [Post-Chorus], [Bridge], [Outro], [Hook], [Refrain], [Interlude], [Breakdown], [Build-up], [Drop], [Solo], [Instrumental], [Fade out]
 - **Tags dynamiques** (vocaux, instrumentaux, d'intensité) : [Spoken word], [Whispered], [Screamed], [Growled], [Choir], [Guitar solo], [Drum break], [Orchestral swell], [quiet], [loud], [epic], [atmospheric], [aggressive], [dark], [ritualistic]… (plus de 40 tags).
 - **Règles** : 1 tag structurel + jusqu’à 3 tags dynamiques par section. L’éditeur vous permet d’ajouter, réorganiser (flèches) et supprimer des sections. Un aperçu en temps réel montre le format final.
-- **Exemple** : `[Chorus]` + `[epic]` + `[choir]` → `[chorus: epic, choir]
+- **Exemple** : `[Chorus]` + `[epic]` + `[choir]` → `[chorus: epic, choir]`
 
 ### 🔧 Autres fonctionnalités
 - **Mode libre** : saisie textuelle complète (description personnalisée)
