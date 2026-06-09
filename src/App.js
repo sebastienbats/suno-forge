@@ -501,6 +501,7 @@ const Sec = ({ children, noBorder }) => (
 
 /* ══════════════════════════════════════════════════════════
    META TAG EDITOR AVEC SAUVEGARDE, IMPORT, DUPLICATION
+   ET DIALOGUE DE CONFIRMATION PERSONNALISÉ
 ══════════════════════════════════════════════════════════ */
 
 const MetaTagEditor = ({ sections, onSectionsChange, accent }) => {
@@ -513,6 +514,11 @@ const MetaTagEditor = ({ sections, onSectionsChange, accent }) => {
   });
   const [templateName, setTemplateName] = useState("");
   const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [confirmDialog, setConfirmDialog] = useState({ show: false, message: "", onConfirm: null });
+
+  const showConfirm = (message, onConfirm) => {
+    setConfirmDialog({ show: true, message, onConfirm: () => { onConfirm(); setConfirmDialog({ show: false, message: "", onConfirm: null }); } });
+  };
 
   const addSection = () => {
     if (!selectedStructural) return;
@@ -567,7 +573,6 @@ const MetaTagEditor = ({ sections, onSectionsChange, accent }) => {
     return desc ? `[${structural}: ${desc}]` : `[${structural}]`;
   };
 
-  // Sauvegarder la structure actuelle
   const saveCurrentStructure = () => {
     if (!templateName.trim()) {
       alert("Veuillez donner un nom à votre structure");
@@ -590,23 +595,20 @@ const MetaTagEditor = ({ sections, onSectionsChange, accent }) => {
     setShowSaveDialog(false);
   };
 
-  // Charger une structure sauvegardée
   const loadStructure = (template) => {
-    if (confirm(`Charger "${template.name}" ? Cela remplacera la structure actuelle.`)) {
+    showConfirm(`Charger "${template.name}" ? Cela remplacera la structure actuelle.`, () => {
       onSectionsChange(template.sections);
-    }
+    });
   };
 
-  // Supprimer une structure sauvegardée
   const deleteTemplate = (id) => {
-    if (confirm("Supprimer cette structure ?")) {
+    showConfirm("Supprimer cette structure ?", () => {
       const updated = savedStructures.filter(t => t.id !== id);
       setSavedStructures(updated);
       localStorage.setItem("suno_metatag_templates", JSON.stringify(updated));
-    }
+    });
   };
 
-  // Exporter la structure actuelle en JSON
   const exportStructure = () => {
     if (sections.length === 0) {
       alert("Aucune structure à exporter");
@@ -626,7 +628,6 @@ const MetaTagEditor = ({ sections, onSectionsChange, accent }) => {
     URL.revokeObjectURL(url);
   };
 
-  // Importer une structure depuis un fichier JSON
   const importStructure = (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -639,9 +640,9 @@ const MetaTagEditor = ({ sections, onSectionsChange, accent }) => {
             ...section,
             id: Date.now() + Math.random()
           }));
-          if (confirm(`Importer ${importedSections.length} section(s) ? Cela remplacera la structure actuelle.`)) {
+          showConfirm(`Importer ${importedSections.length} section(s) ? Cela remplacera la structure actuelle.`, () => {
             onSectionsChange(importedSections);
-          }
+          });
         } else {
           alert("Format de fichier invalide");
         }
@@ -655,6 +656,43 @@ const MetaTagEditor = ({ sections, onSectionsChange, accent }) => {
 
   return (
     <div style={{ marginTop: 8 }}>
+      {/* Dialogue de confirmation personnalisé */}
+      {confirmDialog.show && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: "rgba(0,0,0,0.7)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1000
+        }}>
+          <div style={{
+            background: "#1A1612",
+            border: "1px solid #3A3028",
+            borderRadius: 8,
+            padding: 16,
+            maxWidth: 300,
+            textAlign: "center"
+          }}>
+            <div style={{ color: "#F5EDE0", marginBottom: 12 }}>{confirmDialog.message}</div>
+            <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
+              <button onClick={confirmDialog.onConfirm}
+                style={{ background: "#D4831A", border: "none", borderRadius: 4, color: "#0A0806", fontSize: 12, padding: "5px 12px", cursor: "pointer" }}>
+                Confirmer
+              </button>
+              <button onClick={() => setConfirmDialog({ show: false, message: "", onConfirm: null })}
+                style={{ background: "#2A241C", border: "1px solid #3A3028", borderRadius: 4, color: "#A09078", fontSize: 12, padding: "5px 12px", cursor: "pointer" }}>
+                Annuler
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Barre d'outils de gestion des structures */}
       <div style={{ display: "flex", gap: 6, marginBottom: 10, flexWrap: "wrap" }}>
         <button onClick={exportStructure}
