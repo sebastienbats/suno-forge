@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Copy, Check, Wand2, RotateCcw, ChevronRight, ChevronDown } from "lucide-react";
+import { Copy, Check, Wand2, RotateCcw, ChevronRight, ChevronDown, Plus, Trash2 } from "lucide-react";
 
 /* ══════════════════════════════════════════════════════════
    DATA – Catégories, sous-styles, voix, instruments, techniques
@@ -305,6 +305,31 @@ const RECOMMENDED_TIME_SIGS = {
   urban: ["4/4", "3/4", "6/8", "2/4", "5/4"]
 };
 
+// Tags pour métatags
+const STRUCTURAL_TAGS = [
+  "[Intro]", "[Verse 1]", "[Verse 2]", "[Pre-Chorus]", "[Chorus]", "[Post-Chorus]",
+  "[Bridge]", "[Outro]", "[Hook]", "[Refrain]", "[Interlude]", "[Breakdown]",
+  "[Build-up]", "[Drop]", "[Solo]", "[Instrumental]", "[Fade out]"
+];
+
+const DYNAMIC_TAGS = {
+  vocal: [
+    "[Spoken word]", "[Narration]", "[Whispered]", "[Breathy]", "[Chanted]",
+    "[Screamed]", "[Growled]", "[A cappella]", "[Falsetto]", "[Choir]",
+    "[Harmonized]", "[Call and response]", "[Operatic]", "[Throat singing]", "[Joik]"
+  ],
+  instrumental: [
+    "[Guitar solo]", "[Drum break]", "[Bass drop]", "[Piano interlude]",
+    "[Orchestral swell]", "[Flute melody]", "[Violin lead]", "[Ambient passage]"
+  ],
+  dynamic: [
+    "[quiet]", "[loud]", "[soft]", "[heavy]", "[heavy guitars]", "[epic]",
+    "[intimate]", "[aggressive]", "[intense]", "[atmospheric]", "[ethereal]",
+    "[haunting]", "[triumphant]", "[melancholic]", "[dark]", "[ritualistic]",
+    "[energetic]", "[driving]", "[slow]", "[building]", "[climax]", "[tense]"
+  ]
+};
+
 /* ══════════════════════════════════════════════════════════
    HELPERS
 ══════════════════════════════════════════════════════════ */
@@ -344,21 +369,49 @@ const buildStyleLocal = (sub, moods, instrs, techs, prod, tempo, vocals, key, bp
   return truncateStyle(style, 200);
 };
 
-const buildMetatagsLocal = (cat, sub) => {
-  const isMetal = cat === 'metal';
-  const isCinematic = cat === 'cinematic';
-  const isFolk = cat === 'folk';
-  let structure = [];
-  if (isMetal) {
-    structure = ["[Intro] (atmospheric)", "[Verse 1] (growls)", "[Pre-Chorus]", "[Chorus] (clean vocals)", "[Breakdown]", "[Solo]", "[Outro] (fade out)"];
-  } else if (isCinematic) {
-    structure = ["[Intro] (strings)", "[Build-up]", "[Climax]", "[Chorus] (epic)", "[Bridge]", "[Outro] (resolution)"];
-  } else if (isFolk) {
-    structure = ["[Intro] (folk melody)", "[Verse 1]", "[Chorus] (harmonies)", "[Instrumental]", "[Outro] (acoustic fade)"];
-  } else {
-    structure = ["[Intro]", "[Verse 1]", "[Chorus]", "[Bridge]", "[Outro]"];
+// Génération des métatags à partir des sections personnalisées
+const buildMetatagsFromSections = (sections, cat, sub) => {
+  if (!sections.length) {
+    return buildMetatagsLocal(cat, sub);
   }
-  return structure.join("\n");
+  return sections.map(section => {
+    const structural = section.structural.replace(/[\[\]]/g, '');
+    const desc = section.dynamics.map(t => t.replace(/[\[\]]/g, '').toLowerCase()).join(', ');
+    return desc ? `[${structural}: ${desc}]` : `[${structural}]`;
+  }).join('\n');
+};
+
+const buildMetatagsLocal = (cat, sub) => {
+  const defaults = {
+    metal: `[intro: atmospheric, heavy guitars]
+[verse 1: growled, aggressive]
+[pre-chorus: building]
+[chorus: clean vocals, epic]
+[breakdown: heavy, slow]
+[solo: guitar, intense]
+[outro: fade out, atmospheric]`,
+    cinematic: `[intro: strings, atmospheric]
+[build-up: orchestral swell]
+[climax: epic, choir]
+[bridge: quiet, intimate]
+[outro: resolution, fade]`,
+    folk: `[intro: folk melody, acoustic]
+[verse 1: storytelling, gentle]
+[chorus: harmonies, uplifting]
+[instrumental: flute solo]
+[outro: acoustic fade]`,
+    electronic: `[intro: synth pad, atmospheric]
+[build-up: drum roll, rising]
+[drop: heavy bass, energetic]
+[bridge: minimal, stripped]
+[outro: fade, ambient]`,
+    urban: `[intro: sampled vinyl, chill]
+[verse: spoken word, smooth]
+[chorus: melodic, rnb]
+[bridge: emotional, soft]
+[outro: instrumental fade]`
+  };
+  return defaults[cat] || `[intro]\n[verse 1]\n[chorus]\n[bridge]\n[outro]`;
 };
 
 const buildTipsLocal = (moods, instrs, techs) => {
@@ -366,13 +419,15 @@ const buildTipsLocal = (moods, instrs, techs) => {
   if (moods.length) tips.push(`Les ambiances sélectionnées (${moods.join(", ")}) renforcent le caractère unique.`);
   if (instrs.length) tips.push(`Ajoutez des variations rythmiques pour mettre en valeur ${instrs[0]}.`);
   if (techs.length) tips.push(`Les techniques comme ${techs[0]} apportent de la profondeur.`);
-  tips.push("Utilisez des métatags comme [Breakdown] ou [Solo] pour structurer.");
+  tips.push("Utilisez des métatags comme [breakdown] ou [solo] pour structurer.");
+  tips.push("Pour Suno 4.5, privilégiez le format [section: description].");
   if (!techs.length) tips.push("Pensez aux nuances de jeu pour enrichir la dynamique.");
   return tips.slice(0, 4);
 };
 
-const buildVariantsLocal = (cat, sub, moods, prod) => {
-  const baseStyle = buildStyleLocal(sub, moods, [], [], prod, "", [], "", "", "");
+// Variantes dynamiques (corrigées)
+const buildVariantsLocal = (sub, moods, instrs, techs, prod, tempo, vocals, key, bpm, timeSig) => {
+  const baseStyle = buildStyleLocal(sub, moods, instrs, techs, prod, tempo, vocals, key, bpm, timeSig);
   const variants = [
     { label: "Version Épique", style: truncateStyle(`${baseStyle}, Epic orchestral, massive drums`), desc: "Plus large, plus cinématique." },
     { label: "Version Intime", style: truncateStyle(`${baseStyle}, stripped down, acoustic`), desc: "Approche minimaliste et naturelle." },
@@ -468,6 +523,138 @@ const Sec = ({ children, noBorder }) => (
   </div>
 );
 
+// Éditeur de métatags
+const MetaTagEditor = ({ sections, onSectionsChange, accent }) => {
+  const [selectedStructural, setSelectedStructural] = useState("[Verse 1]");
+  const [selectedDynamics, setSelectedDynamics] = useState([]);
+  const [showDynamicSelector, setShowDynamicSelector] = useState(false);
+
+  const addSection = () => {
+    if (!selectedStructural) return;
+    const newSection = {
+      id: Date.now(),
+      structural: selectedStructural,
+      dynamics: [...selectedDynamics]
+    };
+    onSectionsChange([...sections, newSection]);
+    setSelectedDynamics([]);
+    setShowDynamicSelector(false);
+  };
+
+  const removeSection = (id) => {
+    onSectionsChange(sections.filter(s => s.id !== id));
+  };
+
+  const moveSection = (index, direction) => {
+    const newSections = [...sections];
+    const target = index + direction;
+    if (target < 0 || target >= sections.length) return;
+    [newSections[index], newSections[target]] = [newSections[target], newSections[index]];
+    onSectionsChange(newSections);
+  };
+
+  const toggleDynamicTag = (tag) => {
+    if (selectedDynamics.includes(tag)) {
+      setSelectedDynamics(selectedDynamics.filter(t => t !== tag));
+    } else {
+      if (selectedDynamics.length < 3) {
+        setSelectedDynamics([...selectedDynamics, tag]);
+      } else {
+        alert("Maximum 3 tags dynamiques par section (recommandation Suno)");
+      }
+    }
+  };
+
+  const getPreview = (section) => {
+    const structural = section.structural.replace(/[\[\]]/g, '');
+    const desc = section.dynamics.map(t => t.replace(/[\[\]]/g, '').toLowerCase()).join(', ');
+    return desc ? `[${structural}: ${desc}]` : `[${structural}]`;
+  };
+
+  return (
+    <div style={{ marginTop: 8 }}>
+      <div style={{ background: "#141210", borderRadius: 8, padding: 10, marginBottom: 12 }}>
+        <div style={{ fontFamily: "'Cinzel',serif", fontSize: 9, color: "#A89880", marginBottom: 6 }}>➕ Ajouter une section</div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
+          <select value={selectedStructural} onChange={e => setSelectedStructural(e.target.value)}
+            style={{ background: "#0C0B09", border: "1px solid #3A3028", borderRadius: 6, color: "#F5EDE0", fontSize: 12, padding: "5px 8px" }}>
+            {STRUCTURAL_TAGS.map(tag => <option key={tag} value={tag}>{tag}</option>)}
+          </select>
+          <button onClick={() => setShowDynamicSelector(!showDynamicSelector)}
+            style={{ background: "#2A241C", border: "1px solid #3A3028", borderRadius: 6, color: "#D0C0A8", fontSize: 11, padding: "5px 10px", cursor: "pointer" }}>
+            {selectedDynamics.length > 0 ? `${selectedDynamics.length} tag(s) actif(s)` : "➕ Tags (max 3)"}
+          </button>
+          <button onClick={addSection}
+            style={{ background: "#D4831A", border: "none", borderRadius: 6, color: "#0A0806", fontSize: 11, padding: "5px 12px", cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}>
+            <Plus size={12} /> Ajouter
+          </button>
+        </div>
+        {showDynamicSelector && (
+          <div style={{ marginTop: 10 }}>
+            <div style={{ fontSize: 10, color: "#A89880", marginBottom: 4 }}>Tags vocaux</div>
+            <div className="pill-wrap" style={{ marginBottom: 8 }}>
+              {DYNAMIC_TAGS.vocal.map(tag => (
+                <button key={tag} onClick={() => toggleDynamicTag(tag)}
+                  style={{ background: selectedDynamics.includes(tag) ? "#D4831A22" : "#0C0B09", border: `1px solid ${selectedDynamics.includes(tag) ? "#D4831A" : "#3A3028"}`, borderRadius: 20, padding: "2px 8px", fontSize: 10, color: selectedDynamics.includes(tag) ? "#D4831A" : "#A09078", cursor: "pointer" }}>
+                  {tag}
+                </button>
+              ))}
+            </div>
+            <div style={{ fontSize: 10, color: "#A89880", marginBottom: 4 }}>Tags instrumentaux</div>
+            <div className="pill-wrap" style={{ marginBottom: 8 }}>
+              {DYNAMIC_TAGS.instrumental.map(tag => (
+                <button key={tag} onClick={() => toggleDynamicTag(tag)}
+                  style={{ background: selectedDynamics.includes(tag) ? "#D4831A22" : "#0C0B09", border: `1px solid ${selectedDynamics.includes(tag) ? "#D4831A" : "#3A3028"}`, borderRadius: 20, padding: "2px 8px", fontSize: 10, color: selectedDynamics.includes(tag) ? "#D4831A" : "#A09078", cursor: "pointer" }}>
+                  {tag}
+                </button>
+              ))}
+            </div>
+            <div style={{ fontSize: 10, color: "#A89880", marginBottom: 4 }}>Tags dynamiques</div>
+            <div className="pill-wrap">
+              {DYNAMIC_TAGS.dynamic.map(tag => (
+                <button key={tag} onClick={() => toggleDynamicTag(tag)}
+                  style={{ background: selectedDynamics.includes(tag) ? "#D4831A22" : "#0C0B09", border: `1px solid ${selectedDynamics.includes(tag) ? "#D4831A" : "#3A3028"}`, borderRadius: 20, padding: "2px 8px", fontSize: 10, color: selectedDynamics.includes(tag) ? "#D4831A" : "#A09078", cursor: "pointer" }}>
+                  {tag}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+      {sections.length > 0 && (
+        <div>
+          <div style={{ fontFamily: "'Cinzel',serif", fontSize: 9, color: "#A89880", marginBottom: 6 }}>📋 Structure personnalisée</div>
+          {sections.map((section, idx) => (
+            <div key={section.id} style={{ background: "#0C0B09", border: "1px solid #2A241C", borderRadius: 6, padding: "6px 10px", marginBottom: 6, display: "flex", alignItems: "center", gap: 8 }}>
+              <div style={{ display: "flex", gap: 4 }}>
+                <button onClick={() => moveSection(idx, -1)} disabled={idx === 0} style={{ background: "transparent", border: "none", color: "#A09078", cursor: idx === 0 ? "not-allowed" : "pointer" }}>↑</button>
+                <button onClick={() => moveSection(idx, 1)} disabled={idx === sections.length-1} style={{ background: "transparent", border: "none", color: "#A09078", cursor: idx === sections.length-1 ? "not-allowed" : "pointer" }}>↓</button>
+              </div>
+              <div style={{ flex: 1, fontFamily: "'Crimson Pro',serif", fontSize: 12 }}>
+                <span style={{ color: accent }}>{section.structural}</span>
+                {section.dynamics.length > 0 && (
+                  <span style={{ color: "#7BA0B8", marginLeft: 6 }}>
+                    {section.dynamics.join(" ")}
+                  </span>
+                )}
+              </div>
+              <button onClick={() => removeSection(section.id)} style={{ background: "transparent", border: "none", color: "#E05050", cursor: "pointer" }}>
+                <Trash2 size={14} />
+              </button>
+            </div>
+          ))}
+          <div style={{ marginTop: 8, background: "#0A0908", borderRadius: 6, padding: 8, border: "1px solid #2A241C" }}>
+            <div style={{ fontFamily: "'Cinzel',serif", fontSize: 9, color: "#A89880", marginBottom: 4 }}>📝 Aperçu du format final :</div>
+            <div style={{ fontFamily: "'Crimson Pro',serif", fontSize: 11, color: "#C0B098", lineHeight: 1.6, whiteSpace: "pre-wrap" }}>
+              {sections.map(s => getPreview(s)).join('\n')}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 /* ══════════════════════════════════════════════════════════
    COMPOSANT PRINCIPAL
 ══════════════════════════════════════════════════════════ */
@@ -492,6 +679,7 @@ export default function SunoForge() {
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(null);
   const [err, setErr] = useState(null);
+  const [metaSections, setMetaSections] = useState([]);
 
   const accent = CATS[cat].accent;
 
@@ -591,7 +779,7 @@ export default function SunoForge() {
         let variants = [];
         if (customOn && customTxt.trim()) {
           style = truncateStyle(`Custom: ${customTxt.substring(0, 100)}`, 200);
-          metatags = "[Intro]\n[Verse 1]\n[Chorus]\n[Bridge]\n[Outro]";
+          metatags = "[intro]\n[verse 1]\n[chorus]\n[bridge]\n[outro]";
           tips = ["Ajoutez des métatags pour structurer vos paroles.", "Pensez à la dynamique (soft/loud)."];
           variants = [
             { label: "Style épuré", style: truncateStyle(`${style}, minimal, raw`), desc: "Version plus brute." },
@@ -599,9 +787,9 @@ export default function SunoForge() {
           ];
         } else {
           style = buildStyleLocal(sub, moods, instrs, techs, prod, tempo, vocals, key, bpm, timeSig);
-          metatags = buildMetatagsLocal(cat, sub);
+          metatags = buildMetatagsFromSections(metaSections, cat, sub);
           tips = buildTipsLocal(moods, instrs, techs);
-          variants = buildVariantsLocal(cat, sub, moods, prod);
+          variants = buildVariantsLocal(sub, moods, instrs, techs, prod, tempo, vocals, key, bpm, timeSig);
         }
         setResult({
           style: style,
@@ -852,6 +1040,14 @@ export default function SunoForge() {
             })()}
           </div>
         </Sec>
+
+        <Sec>
+          <SLabel badge={`${metaSections.length} section(s)`}>🎼 Structure des paroles (tags)</SLabel>
+          <MetaTagEditor sections={metaSections} onSectionsChange={setMetaSections} accent={accent} />
+          <div style={{ fontSize: 10, color: "#7A6A58", marginTop: 6, fontStyle: "italic" }}>
+            💡 Recommandation : 2 à 3 tags max par section. Exemple : [Chorus] + [epic] + [choir] → [chorus: epic, choir]
+          </div>
+        </Sec>
       </>)}
 
       <Sec noBorder>
@@ -938,7 +1134,7 @@ export default function SunoForge() {
                 <div key={i} style={{
                   fontSize: 13, lineHeight: 1.9,
                   color: line.startsWith("[") ? "#A0C0D8" : "#C0B098",
-                  fontStyle: line.startsWith("(") ? "italic" : "normal",
+                  fontStyle: "normal",
                   fontFamily: "'Crimson Pro',serif",
                 }}>
                   {line || "\u00A0"}
